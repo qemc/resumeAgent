@@ -1,91 +1,57 @@
 /**
- * Resume data types.
- * These types define the shape of all resume-related data.
+ * Frontend Types
+ * 
+ * Re-exports shared types and adds UI-specific factory functions.
+ * Components import from: '@/types' or '@resume-builder/shared'
  */
 
-import type { SkillLevel } from '../lib/constants';
+// Re-export all shared types (so components can import from '@/types')
+export type {
+    Contact,
+    Experience,
+    Skill,
+    SkillLevel,
+    Certificate,
+    Project,
+    Resume,
+    Interest,
+    Language,
+    LanguageLevel,
+    ApiResponse,
+} from '@resume-builder/shared';
 
-/**
- * Contact information for the resume.
- */
-export interface ContactData {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    linkedin: string;
-    github: string;
-}
+// Import types for local use in factory functions
+import type { Contact, Experience, Skill, Certificate, Project, Interest, Language } from '@resume-builder/shared';
 
-/**
- * Work experience entry.
- * Note: `description` is a free-form text field where users can write
- * detailed information. AI agents will later process this into bullet points.
- */
-export interface Experience {
-    id: string;
-    company: string;
-    position: string;
-    startDate: string;
-    endDate: string;
-    currentlyWorking: boolean;
-    description: string; // Free-form text, AI will convert to bullets later
-}
+export type { resumeLanguage as LanguageCode } from '@resume-builder/shared';
 
-/**
- * Skill entry with optional proficiency level.
- */
-export interface Skill {
-    id: string;
-    name: string;
-    level: SkillLevel;
-}
+// ===========================================================================
+// UI-Specific Type (form data structure)
+// ===========================================================================
 
-/**
- * Certificate or certification entry.
- */
-export interface Certificate {
-    id: string;
-    name: string;
-    issuer: string;
-    date: string;
-    url?: string;
-}
-
-/**
- * Project entry for portfolio section.
- */
-export interface Project {
-    id: string;
-    name: string;
-    description: string;
-    technologies: string;
-    url?: string;
-}
-
-/**
- * Complete resume form data structure.
- * This is the main data model used throughout the application.
- */
 export interface ResumeFormData {
-    contact: ContactData;
+    contact: Contact;
     experiences: Experience[];
     skills: Skill[];
     certificates: Certificate[];
     projects: Project[];
+    interests: Interest[];
+    languages: Language[];
 }
 
-/**
- * Factory functions to create empty data objects.
- * Used when adding new entries to dynamic lists.
- */
-export const createEmptyContact = (): ContactData => ({
+// ===========================================================================
+// Factory Functions (create empty form entries)
+// ===========================================================================
+
+export const createEmptyContact = (): Contact => ({
     firstName: '',
     lastName: '',
     phone: '',
     email: '',
     linkedin: '',
     github: '',
+    website: '',
+    location: '',
 });
 
 export const createEmptyExperience = (id: string): Experience => ({
@@ -94,14 +60,15 @@ export const createEmptyExperience = (id: string): Experience => ({
     position: '',
     startDate: '',
     endDate: '',
-    currentlyWorking: false,
+    current: false,
     description: '',
+    highlights: [],
 });
 
 export const createEmptySkill = (id: string): Skill => ({
     id,
     name: '',
-    level: 'Intermediate',
+    level: 'intermediate',
 });
 
 export const createEmptyCertificate = (id: string): Certificate => ({
@@ -109,13 +76,22 @@ export const createEmptyCertificate = (id: string): Certificate => ({
     name: '',
     issuer: '',
     date: '',
-    url: '',
 });
 
 export const createEmptyProject = (id: string): Project => ({
     id,
     name: '',
     description: '',
-    technologies: '',
-    url: '',
+    technologies: [],
+});
+
+export const createEmptyInterest = (id: string): Interest => ({
+    id,
+    name: '',
+});
+
+export const createEmptyLanguage = (id: string): Language => ({
+    id,
+    name: '',
+    level: 'Native',
 });

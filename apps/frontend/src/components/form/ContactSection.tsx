@@ -1,16 +1,16 @@
 
 
 import { Card, Input } from '@/components/ui';
-import type { ContactData } from '@/types';
+import type { Contact } from '@/types';
 
 /**
  * Props for ContactSection component.
  */
 export interface ContactSectionProps {
     /** Current contact data */
-    data: ContactData;
+    data: Contact;
     /** Callback when any field changes */
-    onChange: (field: keyof ContactData, value: string) => void;
+    onChange: (field: keyof Contact, value: string) => void;
 }
 
 /**

@@ -9,12 +9,13 @@
         "start": "node dist/server.js"
     },
     "dependencies": {
-        "fastify": "^5.3.0",
-        "@fastify/cors": "^11.0.0"
+        "@fastify/cors": "^11.0.0",
+        "@resume-builder/shared": "*",
+        "fastify": "^5.3.0"
     },
     "devDependencies": {
-        "typescript": "^5.0.0",
+        "@types/node": "^22.0.0",
         "tsx": "^4.19.0",
-        "@types/node": "^22.0.0"
+        "typescript": "^5.0.0"
     }
 }

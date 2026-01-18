@@ -3,8 +3,10 @@
  * Centralized configuration for easy maintenance.
  */
 
-export const SKILL_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Expert'] as const;
-export type SkillLevel = (typeof SKILL_LEVELS)[number];
+// Re-export SkillLevel from shared for consistency
+export type { SkillLevel } from '@resume-builder/shared';
+
+export const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
 
 export const APP_CONFIG = {
     name: 'Resume Builder',

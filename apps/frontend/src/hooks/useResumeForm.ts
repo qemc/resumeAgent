@@ -1,18 +1,22 @@
 
-
 import { useState, useCallback } from 'react';
 import {
     type ResumeFormData,
-    type ContactData,
+    type Contact,
     type Experience,
     type Skill,
     type Certificate,
     type Project,
+    type Interest,
+    type Language,
+    type LanguageCode,
     createEmptyContact,
     createEmptyExperience,
     createEmptySkill,
     createEmptyCertificate,
     createEmptyProject,
+    createEmptyInterest,
+    createEmptyLanguage,
 } from '@/types';
 import { generateId } from '@/lib/utils';
 
@@ -20,14 +24,18 @@ import { generateId } from '@/lib/utils';
  * Return type for the useResumeForm hook.
  */
 export interface UseResumeFormReturn {
-    // Form data
+    // Form data for the ACTIVE language
     formData: ResumeFormData;
+
+    // Language State
+    activeLang: LanguageCode;
+    setLanguage: (lang: LanguageCode) => void;
 
     // Submission state
     isSubmitting: boolean;
 
     // Contact handlers
-    updateContact: (field: keyof ContactData, value: string) => void;
+    updateContact: (field: keyof Contact, value: string) => void;
 
     // Experience handlers
     addExperience: () => void;
@@ -49,53 +57,79 @@ export interface UseResumeFormReturn {
     removeProject: (id: string) => void;
     updateProject: (id: string, field: keyof Project, value: string) => void;
 
+    // Interest handlers
+    addInterest: () => void;
+    removeInterest: (id: string) => void;
+    updateInterest: (id: string, field: keyof Interest, value: string) => void;
+
+    // Language handlers
+    addLanguage: () => void;
+    removeLanguage: (id: string) => void;
+    updateLanguage: (id: string, field: keyof Language, value: string) => void;
+
     // Form actions
     handleSubmit: (e: React.FormEvent) => Promise<void>;
     resetForm: () => void;
 }
 
-/**
- * Custom hook for managing resume form state.
- * 
- * This hook encapsulates all form state and handlers, making the
- * ResumeForm component a thin orchestrator that just wires things together.
- * 
- * @example
- * function ResumeForm() {
- *   const form = useResumeForm();
- *   
- *   return (
- *     <form onSubmit={form.handleSubmit}>
- *       <ContactSection data={form.formData.contact} onChange={form.updateContact} />
- *       ...
- *     </form>
- *   );
- * }
- */
+// Internal state structure
+interface MultiLanguageState {
+    activeLang: LanguageCode;
+    data: Record<LanguageCode, ResumeFormData>;
+}
+
+const createInitialResumeData = (): ResumeFormData => ({
+    contact: createEmptyContact(),
+    experiences: [createEmptyExperience('exp-initial-0')],
+    skills: [createEmptySkill('skill-initial-0')],
+    certificates: [],
+    projects: [],
+    interests: [],
+    languages: [],
+});
+
 export function useResumeForm(): UseResumeFormReturn {
-    // Initial form state with deterministic IDs to prevent hydration mismatch
-    // Random IDs are only used when adding new entries dynamically
-    const [formData, setFormData] = useState<ResumeFormData>(() => ({
-        contact: createEmptyContact(),
-        experiences: [createEmptyExperience('exp-initial-0')],
-        skills: [createEmptySkill('skill-initial-0')],
-        certificates: [],
-        projects: [],
+    // Initial state with both EN and PL buckets
+    const [state, setState] = useState<MultiLanguageState>(() => ({
+        activeLang: 'EN',
+        data: {
+            EN: createInitialResumeData(),
+            PL: createInitialResumeData(),
+        }
     }));
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Helper to update the CURRENT language's data safely
+    const setFormData = useCallback((updater: (prev: ResumeFormData) => ResumeFormData) => {
+        setState((prevState) => ({
+            ...prevState,
+            data: {
+                ...prevState.data,
+                [prevState.activeLang]: updater(prevState.data[prevState.activeLang])
+            }
+        }));
+    }, []);
+
+    // Language Switcher
+    const setLanguage = useCallback((lang: LanguageCode) => {
+        setState((prev) => ({ ...prev, activeLang: lang }));
+    }, []);
+
+    // Derived Getter
+    const formData = state.data[state.activeLang];
 
 
     // ============================================
     // Contact Handlers
     // ============================================
 
-    const updateContact = useCallback((field: keyof ContactData, value: string) => {
+    const updateContact = useCallback((field: keyof Contact, value: string) => {
         setFormData((prev) => ({
             ...prev,
             contact: { ...prev.contact, [field]: value },
         }));
-    }, []);
+    }, [setFormData]);
 
     // ============================================
     // Experience Handlers
@@ -106,14 +140,14 @@ export function useResumeForm(): UseResumeFormReturn {
             ...prev,
             experiences: [...prev.experiences, createEmptyExperience(generateId())],
         }));
-    }, []);
+    }, [setFormData]);
 
     const removeExperience = useCallback((id: string) => {
         setFormData((prev) => ({
             ...prev,
             experiences: prev.experiences.filter((exp) => exp.id !== id),
         }));
-    }, []);
+    }, [setFormData]);
 
     const updateExperience = useCallback(
         (id: string, field: keyof Experience, value: string | boolean) => {
@@ -124,7 +158,7 @@ export function useResumeForm(): UseResumeFormReturn {
                 ),
             }));
         },
-        []
+        [setFormData]
     );
 
     // ============================================
@@ -136,14 +170,14 @@ export function useResumeForm(): UseResumeFormReturn {
             ...prev,
             skills: [...prev.skills, createEmptySkill(generateId())],
         }));
-    }, []);
+    }, [setFormData]);
 
     const removeSkill = useCallback((id: string) => {
         setFormData((prev) => ({
             ...prev,
             skills: prev.skills.filter((skill) => skill.id !== id),
         }));
-    }, []);
+    }, [setFormData]);
 
     const updateSkill = useCallback(
         (id: string, field: keyof Skill, value: string) => {
@@ -154,7 +188,7 @@ export function useResumeForm(): UseResumeFormReturn {
                 ),
             }));
         },
-        []
+        [setFormData]
     );
 
     // ============================================
@@ -166,14 +200,14 @@ export function useResumeForm(): UseResumeFormReturn {
             ...prev,
             certificates: [...prev.certificates, createEmptyCertificate(generateId())],
         }));
-    }, []);
+    }, [setFormData]);
 
     const removeCertificate = useCallback((id: string) => {
         setFormData((prev) => ({
             ...prev,
             certificates: prev.certificates.filter((cert) => cert.id !== id),
         }));
-    }, []);
+    }, [setFormData]);
 
     const updateCertificate = useCallback(
         (id: string, field: keyof Certificate, value: string) => {
@@ -184,7 +218,7 @@ export function useResumeForm(): UseResumeFormReturn {
                 ),
             }));
         },
-        []
+        [setFormData]
     );
 
     // ============================================
@@ -196,14 +230,14 @@ export function useResumeForm(): UseResumeFormReturn {
             ...prev,
             projects: [...prev.projects, createEmptyProject(generateId())],
         }));
-    }, []);
+    }, [setFormData]);
 
     const removeProject = useCallback((id: string) => {
         setFormData((prev) => ({
             ...prev,
             projects: prev.projects.filter((proj) => proj.id !== id),
         }));
-    }, []);
+    }, [setFormData]);
 
     const updateProject = useCallback(
         (id: string, field: keyof Project, value: string) => {
@@ -214,7 +248,67 @@ export function useResumeForm(): UseResumeFormReturn {
                 ),
             }));
         },
-        []
+        [setFormData]
+    );
+
+    // ============================================
+    // Interest Handlers
+    // ============================================
+
+    const addInterest = useCallback(() => {
+        setFormData((prev) => ({
+            ...prev,
+            interests: [...prev.interests, createEmptyInterest(generateId())],
+        }));
+    }, [setFormData]);
+
+    const removeInterest = useCallback((id: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            interests: prev.interests.filter((item) => item.id !== id),
+        }));
+    }, [setFormData]);
+
+    const updateInterest = useCallback(
+        (id: string, field: keyof Interest, value: string) => {
+            setFormData((prev) => ({
+                ...prev,
+                interests: prev.interests.map((item) =>
+                    item.id === id ? { ...item, [field]: value } : item
+                ),
+            }));
+        },
+        [setFormData]
+    );
+
+    // ============================================
+    // Language Handlers
+    // ============================================
+
+    const addLanguage = useCallback(() => {
+        setFormData((prev) => ({
+            ...prev,
+            languages: [...prev.languages, createEmptyLanguage(generateId())],
+        }));
+    }, [setFormData]);
+
+    const removeLanguage = useCallback((id: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            languages: prev.languages.filter((item) => item.id !== id),
+        }));
+    }, [setFormData]);
+
+    const updateLanguage = useCallback(
+        (id: string, field: keyof Language, value: string) => {
+            setFormData((prev) => ({
+                ...prev,
+                languages: prev.languages.map((item) =>
+                    item.id === id ? { ...item, [field]: value } : item
+                ),
+            }));
+        },
+        [setFormData]
     );
 
     // ============================================
@@ -226,33 +320,37 @@ export function useResumeForm(): UseResumeFormReturn {
         setIsSubmitting(true);
 
         try {
-            // TODO: Replace with actual API call via services/api.ts
-            console.log('Resume Data:', formData);
+            // Log only the active language data
+            console.log(`Submitting Resume [${state.activeLang.toUpperCase()}]:`, state.data[state.activeLang]);
 
             // Simulate API call
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            alert('Resume data collected successfully! Check the console for the data.');
+            alert(`Resume (${state.activeLang.toUpperCase()}) collected successfully! Check the console.`);
         } catch (error) {
             console.error('Submission error:', error);
             alert('An error occurred. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
-    }, [formData]);
+    }, [state.data, state.activeLang]);
 
     const resetForm = useCallback(() => {
-        setFormData({
-            contact: createEmptyContact(),
-            experiences: [createEmptyExperience('exp-initial-0')],
-            skills: [createEmptySkill('skill-initial-0')],
-            certificates: [],
-            projects: [],
-        });
+        if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+            setState({
+                activeLang: 'EN',
+                data: {
+                    EN: createInitialResumeData(),
+                    PL: createInitialResumeData(),
+                }
+            });
+        }
     }, []);
 
     return {
         formData,
+        activeLang: state.activeLang,
+        setLanguage,
         isSubmitting,
         updateContact,
         addExperience,
@@ -267,6 +365,12 @@ export function useResumeForm(): UseResumeFormReturn {
         addProject,
         removeProject,
         updateProject,
+        addInterest,
+        removeInterest,
+        updateInterest,
+        addLanguage,
+        removeLanguage,
+        updateLanguage,
         handleSubmit,
         resetForm,
     };

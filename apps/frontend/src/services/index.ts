@@ -1,19 +1,9 @@
 /**
- * Services Exports
+ * Services Index
  * 
- * Central export for all service modules.
- * Import like: import { api, aiService, dbService } from '@/services';
+ * YOUR CONTROL: This is the main export point for all your fetch functions.
+ * Components import from here: import { loginUser, submitResume } from '@/services';
  */
 
-export { api, type ApiResponse, type SubmitResumeResponse, type GeneratedResume } from './api';
-export {
-    aiService,
-    type GeneratedBulletPoints,
-    type JobOfferAnalysis,
-    type TailoredResume
-} from './ai';
-export {
-    dbService,
-    type SavedResume,
-    type ResumeWithData
-} from './db';
+
+

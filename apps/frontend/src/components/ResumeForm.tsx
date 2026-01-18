@@ -2,12 +2,15 @@
 
 import { useResumeForm } from '@/hooks';
 import { Button } from '@/components/ui';
+import { LanguageToggle } from '@/components/LanguageToggle';
 import {
     ContactSection,
     ExperienceSection,
     SkillsSection,
     CertificatesSection,
     ProjectsSection,
+    LanguagesSection,
+    InterestsSection,
 } from '@/components/form';
 
 /**
@@ -44,6 +47,8 @@ const CheckIcon = () => (
 export default function ResumeForm() {
     const {
         formData,
+        activeLang,
+        setLanguage,
         isSubmitting,
         updateContact,
         addExperience,
@@ -58,13 +63,23 @@ export default function ResumeForm() {
         addProject,
         removeProject,
         updateProject,
+        addInterest,
+        removeInterest,
+        updateInterest,
+        addLanguage,
+        removeLanguage,
+        updateLanguage,
         handleSubmit,
+        resetForm,
     } = useResumeForm();
 
     return (
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-6 space-y-8">
             {/* Header */}
-            <header className="text-center mb-8">
+            <header className="text-center mb-8 flex flex-col items-center">
+                <div className="w-full flex justify-end mb-4">
+                    <LanguageToggle activeLang={activeLang} onChange={setLanguage} />
+                </div>
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     Resume Builder
                 </h1>
@@ -107,8 +122,31 @@ export default function ResumeForm() {
                 onUpdate={updateProject}
             />
 
+            <LanguagesSection
+                languages={formData.languages}
+                onAdd={addLanguage}
+                onRemove={removeLanguage}
+                onUpdate={updateLanguage}
+            />
+
+            <InterestsSection
+                interests={formData.interests}
+                onAdd={addInterest}
+                onRemove={removeInterest}
+                onUpdate={updateInterest}
+            />
+
             {/* Submit Button */}
             <div className="flex justify-center pt-4">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="lg"
+                    onClick={resetForm}
+                    className="mr-4 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                >
+                    Clear All
+                </Button>
                 <Button
                     type="submit"
                     variant="primary"
@@ -117,7 +155,9 @@ export default function ResumeForm() {
                     leftIcon={!isSubmitting ? <CheckIcon /> : undefined}
                     className="px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg transform hover:scale-105 transition-all"
                 >
-                    {isSubmitting ? 'Submitting...' : 'Submit Resume'}
+                    {isSubmitting
+                        ? 'Submitting...'
+                        : `Submit Resume (${activeLang === 'EN' ? 'English' : 'Polish'})`}
                 </Button>
             </div>
         </form>

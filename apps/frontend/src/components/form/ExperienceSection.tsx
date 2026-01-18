@@ -103,13 +103,13 @@ export function ExperienceSection({
                                     label="End Date"
                                     type="month"
                                     value={exp.endDate}
-                                    disabled={exp.currentlyWorking}
+                                    disabled={exp.current}
                                     onChange={(e) => onUpdate(exp.id, 'endDate', e.target.value)}
                                 />
                                 <Checkbox
                                     label="Currently working here"
-                                    checked={exp.currentlyWorking}
-                                    onChange={(e) => onUpdate(exp.id, 'currentlyWorking', e.target.checked)}
+                                    checked={exp.current}
+                                    onChange={(e) => onUpdate(exp.id, 'current', e.target.checked)}
                                 />
                             </div>
                         </div>

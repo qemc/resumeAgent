@@ -7,16 +7,20 @@
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import { registerRoutes } from './routes/index';
 
 const app = Fastify({ logger: true });
 
 // Enable CORS for frontend
 await app.register(cors, { origin: 'http://localhost:5173' });
 
-// Hello World endpoint
+// Hello World / Health check endpoint
 app.get('/', async () => {
-    return { message: 'Hello World!' };
+    return { status: 'ok', message: 'Resume Builder API' };
 });
+
+// Register all API routes
+await registerRoutes(app);
 
 // Start server
 const PORT = Number(process.env.PORT) || 3001;
