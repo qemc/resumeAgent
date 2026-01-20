@@ -18,10 +18,13 @@
         "node": ">=20"
     },
     "dependencies": {
+        "bcrypt": "^6.0.0",
         "better-sqlite3": "^12.6.2",
+        "dotenv": "^17.2.3",
         "drizzle-orm": "^0.45.1"
     },
     "devDependencies": {
+        "@types/bcrypt": "^6.0.0",
         "@types/better-sqlite3": "^7.6.13",
         "drizzle-kit": "^0.31.8"
     }

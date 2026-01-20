@@ -1,34 +1,34 @@
-/**
- * Minimal Fastify Server
- *
- * A simple Hello World endpoint to verify the setup works.
- * Build this out however you want!
- */
-
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
+import Fastify, { type FastifyRegister, type FastifyReply, type FastifyRequest } from 'fastify';
+import cors, { fastifyCors } from '@fastify/cors';
 import { registerRoutes } from './routes/index';
+import fastifyJwt from '@fastify/jwt';
 
+
+const JWT_SECRET_KEY = process.env['JWT_SECRET_KEY'];
 const app = Fastify({ logger: true });
 
-// Enable CORS for frontend
-await app.register(cors, { origin: 'http://localhost:5173' });
+app.register(fastifyCors, { origin: 'http://localhost:5173' });
+app.register(fastifyJwt, { secret: JWT_SECRET_KEY });
 
-// Hello World / Health check endpoint
-app.get('/', async () => {
-    return { status: 'ok', message: 'Resume Builder API' };
-});
+app.decorate('auth', async function (request: FastifyRequest, reply: FastifyReply) {
+    try {
+        await request.jwtVerify();
+    } catch (err) {
+        reply.send(err)
+    }
+})
 
-// Register all API routes
-await registerRoutes(app);
 
-// Start server
-const PORT = Number(process.env.PORT) || 3001;
 
-app.listen({ port: PORT, host: '0.0.0.0' }, (err) => {
-    if (err) {
+
+
+const start = async () => {
+    try {
+        await app.listen({ port: 3000 });
+        console.log('Server running at http://localhost:3000');
+    } catch (err) {
         app.log.error(err);
         process.exit(1);
     }
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+}
+start()

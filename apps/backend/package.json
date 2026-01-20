@@ -9,13 +9,18 @@
         "start": "node dist/server.js"
     },
     "dependencies": {
-        "@fastify/cors": "^11.0.0",
+        "@fastify/cors": "^11.2.0",
+        "@fastify/jwt": "^10.0.0",
         "@resume-builder/shared": "*",
-        "fastify": "^5.3.0"
+        "bcrypt": "^6.0.0",
+        "dotenv": "^17.2.3",
+        "fastify": "^5.7.1",
+        "zod": "^4.3.5"
     },
     "devDependencies": {
-        "@types/node": "^22.0.0",
-        "tsx": "^4.19.0",
+        "@types/bcrypt": "^6.0.0",
+        "@types/node": "^22.19.7",
+        "tsx": "^4.21.0",
         "typescript": "^5.0.0"
     }
 }
