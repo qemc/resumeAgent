@@ -1,16 +1,9 @@
-/**
- * Routes Index
- * 
- * Register all route modules here.
- */
-
 import type { FastifyInstance } from 'fastify';
 import { resumeRoutes } from './resume';
+import { authRoutes } from './auth';
 
 export async function registerRoutes(fastify: FastifyInstance) {
     // Register all route modules
     await fastify.register(resumeRoutes);
-
-    // Add more route modules here as needed:
-    // await fastify.register(workflowRoutes);
+    await fastify.register(authRoutes);
 }
