@@ -3,10 +3,10 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { users } from "../db/schema";
-import { verifyPasswd } from "../../utils/password";
+import { hashPasswd, verifyPasswd } from "../../utils/password";
 import { AppError, ERRORS } from "../../utils/errors";
 
-const bodySchema = z.object({
+const bodyLoginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(1)
 })
@@ -15,7 +15,7 @@ export async function authRoutes(app: FastifyInstance) {
     app.post('/auth/login', async (req, reply) => {
 
         // parsing the request to check if is valid
-        const parse = bodySchema.safeParse(req.body)
+        const parse = bodyLoginSchema.safeParse(req.body)
 
         if (!parse.success) { throw new AppError(ERRORS.INVALID_REQUEST) }
         const { email, password } = parse.data
@@ -47,7 +47,7 @@ export async function authRoutes(app: FastifyInstance) {
             path: '/',
             httpOnly: true,
             secure: false, // to be changed
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60
         })
 
@@ -63,4 +63,61 @@ export async function authRoutes(app: FastifyInstance) {
             message: 'Logged out'
         };
     });
+
+    app.post('/auth/register', async (req, reply) => {
+
+        const parse = bodyLoginSchema.safeParse(req.body);
+        if (!parse.success) { throw new AppError(ERRORS.INVALID_REQUEST) }
+
+        const { email, password } = parse.data
+
+        const existingUsers = await db.query.users.findMany({
+            where: eq(users.email, email)
+        });
+
+        if (existingUsers.length > 0) throw new AppError(ERRORS.USER_ALREADY_EXISTS)
+
+        const hashedPasswd = await hashPasswd(password)
+
+        const [newUser] = await db.insert(users).values({
+            email: email,
+            password: hashedPasswd
+        }).returning()
+
+        const token = app.jwt.sign({
+            id: newUser.id,
+            email: newUser.email
+        },
+            { expiresIn: '15m' }
+        )
+
+        const refreshToken = app.jwt.sign(
+            { id: newUser.id },
+            { expiresIn: '7d' }
+        )
+
+        reply.setCookie('refreshToken', refreshToken, {
+            path: '/',
+            httpOnly: true,
+            secure: false, // to be changed
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60
+        })
+
+        return {
+            accessToken: token
+        }
+    })
+
+    app.get('/auth/me', { onRequest: [app.auth] }, async (req, reply) => {
+
+        const user = await db.query.users.findFirst({
+            where: eq(users.id, req.user.id)
+        })
+        if (!user) throw new AppError(ERRORS.USER_NOT_FOUND);
+
+        const { password, ...userWithoutPassword } = user;
+
+        return { user: userWithoutPassword };
+    })
 }

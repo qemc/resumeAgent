@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "@resume-builder/shared": "*",
+    "axios": "^1.13.2",
+    "axios-auth-refresh": "^3.3.6",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^7.13.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7"
   },

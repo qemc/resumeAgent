@@ -23,6 +23,12 @@ export const ERRORS = {
         status: 404
     },
 
+    USER_ALREADY_EXISTS: {
+        code: 'USER_002',
+        message: 'User already exists',
+        status: 406
+    },
+
     RESUME_NOT_FOUND: {
         code: 'RES_001',
         message: 'Resume not found',

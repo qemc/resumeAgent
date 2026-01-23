@@ -10,14 +10,13 @@ const JWT_SECRET_KEY = process.env['JWT_SECRET_KEY'];
 const COOKIE_SECRET_KEY = process.env['COOKIE_SECRET_KEY']
 const app = Fastify({ logger: true });
 
-app.register(fastifyCors, { origin: 'http://localhost:5173' });
+app.register(fastifyCors, { origin: 'http://localhost:5173', credentials: true });
 app.register(fastifyJwt, { secret: JWT_SECRET_KEY });
 
 app.register(cookie, {
     secret: COOKIE_SECRET_KEY,
     hook: 'onRequest'
 });
-await registerRoutes(app)
 
 app.decorate('auth', async function (request: FastifyRequest, reply: FastifyReply) {
     try {
@@ -27,8 +26,10 @@ app.decorate('auth', async function (request: FastifyRequest, reply: FastifyRepl
     }
 })
 
+
 const start = async () => {
     try {
+        await registerRoutes(app);
         await app.listen({ port: 3000 });
         console.log('Server running at http://localhost:3000');
     } catch (err) {
