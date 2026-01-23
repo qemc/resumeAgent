@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
 import ResumeForm from './components/ResumeForm';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -14,9 +15,12 @@ function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/" element={
                         <ProtectedRoute>
-                            <main className="min-h-screen py-8 bg-gradient-to-b from-background to-secondary/20">
-                                <ResumeForm />
-                            </main>
+                            <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+                                <Navbar />
+                                <main className="py-8">
+                                    <ResumeForm />
+                                </main>
+                            </div>
                         </ProtectedRoute>
                     } />
                 </Routes>

@@ -10,10 +10,13 @@
 export type {
     Contact,
     Experience,
+    ExperienceInput,
     Skill,
     SkillLevel,
     Certificate,
+    CertificateInput,
     Project,
+    ProjectInput,
     Interest,
     Language,
     LanguageLevel,

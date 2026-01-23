@@ -35,6 +35,12 @@ export const ERRORS = {
         status: 404
     },
 
+    NOT_FOUND: {
+        code: 'RES_002',
+        message: 'Resource not found',
+        status: 404
+    },
+
     INTERNAL_ERROR: {
         code: 'SYS_001',
         message: 'Something went wrong',

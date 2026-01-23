@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { getAccessToken, setAccessToken, clearAccessToken } from '../services/auth-token';
+import { setAccessToken, clearAccessToken } from '../services/auth-token';
 import { api } from '../services/api';
 
 interface User {

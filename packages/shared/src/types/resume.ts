@@ -38,6 +38,9 @@ export interface Experience {
     highlights?: string[];
 }
 
+/** Input type for creating/updating - no id (DB generates it) */
+export type ExperienceInput = Omit<Experience, 'id'>;
+
 // =============================================================================
 // Skills
 // =============================================================================
@@ -64,6 +67,9 @@ export interface Certificate {
     credentialId?: string;
 }
 
+/** Input type for creating/updating - no id (DB generates it) */
+export type CertificateInput = Omit<Certificate, 'id'>;
+
 // =============================================================================
 // Projects
 // =============================================================================
@@ -76,6 +82,9 @@ export interface Project {
     startDate?: string;
     endDate?: string;
 }
+
+/** Input type for creating/updating - no id (DB generates it) */
+export type ProjectInput = Omit<Project, 'id'>;
 
 // =============================================================================
 // Interests
@@ -113,7 +122,7 @@ export interface Resume {
     name: string;
     contact: Contact;
     summary?: string;
-    experiences: Experience[];
+    experiences: Experience[]; // osobne
     skills: Skill[];
     certificates: Certificate[];
     projects: Project[];

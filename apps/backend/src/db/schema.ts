@@ -4,12 +4,17 @@ import {
     integer
 } from 'drizzle-orm/sqlite-core'
 
-import type {
-    Resume
+import {
+    type Contact,
+    type Skill,
+    type Language,
+    type Interest,
+    type ExperienceInput,
+    type CertificateInput,
+    type ProjectInput
 } from "@resume-builder/shared";
 
 
-type ResumeDb = Omit<Resume, 'id' | 'resumeLanguage' | 'userId'>
 
 
 export const users = sqliteTable('users', {
@@ -25,14 +30,50 @@ export const resumes = sqliteTable('resumes', {
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
     resume_lang: text('resume_lang').notNull(),
-    resume: text('resume', { mode: 'json' })
-        .$type<ResumeDb>()
+    contact: text('contact', { mode: 'json' })
+        .$type<Contact>()
+        .notNull(),
+    skills: text('skills', { mode: 'json' })
+        .$type<Skill[]>()
+        .notNull(),
+    languages: text('languages', { mode: 'json' })
+        .$type<Language[]>()
+        .notNull(),
+    interests: text('interests', { mode: 'json' })
+        .$type<Interest[]>()
+        .notNull()
+})
+
+export const experiences = sqliteTable('experiences', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
+    experience: text('experience', { mode: 'json' })
+        .$type<ExperienceInput>()
+        .notNull()
+})
+
+export const certificates = sqliteTable('certificates', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
+    certificate: text('certificate', { mode: 'json' })
+        .$type<CertificateInput>()
+        .notNull()
+})
+
+export const projects = sqliteTable('projects', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
+    project: text('project', { mode: 'json' })
+        .$type<ProjectInput>()
         .notNull()
 })
 
 
 
-// To do:
-// Implement DB structure
-// Users for user data
-// resumes for resumes
+

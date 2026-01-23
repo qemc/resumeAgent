@@ -3,9 +3,7 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { users } from "../db/schema";
-import { verifyPasswd } from "../../utils/password";
 import { AppError, ERRORS } from "../../utils/errors";
-import { access } from "fs";
 
 
 export async function refreshRoutes(app: FastifyInstance) {
