@@ -1,7 +1,31 @@
-
-
 import { Card, CardItem, Input, Button } from '@/components/ui';
 import type { Certificate } from '@/types';
+
+// Labels in English and Polish
+const labels = {
+    EN: {
+        title: 'Certificates',
+        addCertificate: 'Add Certificate',
+        name: 'Certificate Name',
+        issuer: 'Issuing Organization',
+        date: 'Date Obtained',
+        url: 'Certificate URL',
+        namePlaceholder: 'AWS Solutions Architect',
+        issuerPlaceholder: 'Amazon Web Services',
+        emptyMessage: 'No certificates added yet. Click the button above to add one.',
+    },
+    PL: {
+        title: 'Certyfikaty',
+        addCertificate: 'Dodaj certyfikat',
+        name: 'Nazwa certyfikatu',
+        issuer: 'Organizacja wydająca',
+        date: 'Data uzyskania',
+        url: 'Link do certyfikatu',
+        namePlaceholder: 'AWS Solutions Architect',
+        issuerPlaceholder: 'Amazon Web Services',
+        emptyMessage: 'Nie dodano jeszcze certyfikatów. Kliknij powyższy przycisk, aby dodać.',
+    },
+};
 
 /**
  * Plus icon component.
@@ -35,43 +59,49 @@ export interface CertificatesSectionProps {
     onRemove: (id: string) => void;
     /** Update a field in a certificate entry */
     onUpdate: (id: string, field: keyof Certificate, value: string) => void;
+    /** Extra action to display in header (e.g., Save button) */
+    extraHeaderAction?: React.ReactNode;
+    /** Language for labels (default: 'EN') */
+    lang?: 'EN' | 'PL';
 }
 
 /**
  * Certificates section of the resume form.
- * 
- * Features:
- * - Optional section (starts empty)
- * - Dynamic add/remove entries
- * - Certificate name, issuer, date, and optional URL
  */
 export function CertificatesSection({
     certificates,
     onAdd,
     onRemove,
     onUpdate,
+    extraHeaderAction,
+    lang = 'EN',
 }: CertificatesSectionProps) {
+    const t = labels[lang];
+
     return (
         <Card
             sectionNumber={4}
-            title="Certificates"
+            title={t.title}
             badgeColor="orange"
             isOptional
             headerAction={
-                <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={onAdd}
-                    leftIcon={<PlusIcon />}
-                    className="bg-orange-600 hover:bg-orange-700"
-                >
-                    Add Certificate
-                </Button>
+                <div className="flex items-center gap-2">
+                    {extraHeaderAction}
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={onAdd}
+                        leftIcon={<PlusIcon />}
+                        className="bg-orange-600 hover:bg-orange-700"
+                    >
+                        {t.addCertificate}
+                    </Button>
+                </div>
             }
         >
             {certificates.length === 0 ? (
                 <p className="text-muted-foreground text-center py-6">
-                    No certificates added yet. Click the button above to add one.
+                    {t.emptyMessage}
                 </p>
             ) : (
                 <div className="space-y-4">
@@ -83,28 +113,28 @@ export function CertificatesSection({
                         >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
-                                    label="Certificate Name"
+                                    label={t.name}
                                     required
                                     value={cert.name}
                                     onChange={(e) => onUpdate(cert.id, 'name', e.target.value)}
-                                    placeholder="AWS Solutions Architect"
+                                    placeholder={t.namePlaceholder}
                                 />
                                 <Input
-                                    label="Issuing Organization"
+                                    label={t.issuer}
                                     required
                                     value={cert.issuer}
                                     onChange={(e) => onUpdate(cert.id, 'issuer', e.target.value)}
-                                    placeholder="Amazon Web Services"
+                                    placeholder={t.issuerPlaceholder}
                                 />
                                 <Input
-                                    label="Date Obtained"
+                                    label={t.date}
                                     type="month"
                                     required
                                     value={cert.date}
                                     onChange={(e) => onUpdate(cert.id, 'date', e.target.value)}
                                 />
                                 <Input
-                                    label="Certificate URL"
+                                    label={t.url}
                                     type="url"
                                     value={cert.url || ''}
                                     onChange={(e) => onUpdate(cert.id, 'url', e.target.value)}

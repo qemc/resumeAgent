@@ -13,9 +13,7 @@ export default function Navbar() {
     };
 
     const navItems = [
-        { path: '/', label: 'Resume Builder' },
-        // Add more tabs here as needed
-        // { path: '/settings', label: 'Settings' },
+        { path: '/my-resume', label: 'My Resume Data' },
     ];
 
     return (
@@ -35,8 +33,8 @@ export default function Navbar() {
                                     key={item.path}
                                     to={item.path}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${location.pathname === item.path
-                                            ? 'bg-primary/10 text-primary'
-                                            : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                                         }`}
                                 >
                                     {item.label}

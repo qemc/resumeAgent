@@ -66,6 +66,10 @@ export async function authRoutes(app: FastifyInstance) {
 
     app.post('/auth/register', async (req, reply) => {
 
+        if (process.env.ENABLE_REGISTRATION === 'false') {
+            throw new AppError(ERRORS.REGISTRATION_DISABLED);
+        }
+
         const parse = bodyLoginSchema.safeParse(req.body);
         if (!parse.success) { throw new AppError(ERRORS.INVALID_REQUEST) }
 

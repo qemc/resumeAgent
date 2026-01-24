@@ -10,7 +10,11 @@ const JWT_SECRET_KEY = process.env['JWT_SECRET_KEY'];
 const COOKIE_SECRET_KEY = process.env['COOKIE_SECRET_KEY']
 const app = Fastify({ logger: true });
 
-app.register(fastifyCors, { origin: 'http://localhost:5173', credentials: true });
+app.register(fastifyCors, {
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+});
 app.register(fastifyJwt, { secret: JWT_SECRET_KEY });
 
 app.register(cookie, {

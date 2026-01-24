@@ -1,8 +1,20 @@
-
-
 import { Card, CardItem, Input, Select, Button } from '@/components/ui';
 import type { Skill } from '@/types';
 import { SKILL_LEVELS } from '@/lib/constants';
+
+// Labels in English and Polish
+const labels = {
+    EN: {
+        title: 'Skills',
+        addSkill: 'Add Skill',
+        placeholder: 'e.g., React, Python, AWS',
+    },
+    PL: {
+        title: 'Umiejętności',
+        addSkill: 'Dodaj umiejętność',
+        placeholder: 'np. React, Python, AWS',
+    },
+};
 
 /**
  * Plus icon component.
@@ -36,6 +48,10 @@ export interface SkillsSectionProps {
     onRemove: (id: string) => void;
     /** Update a field in a skill entry */
     onUpdate: (id: string, field: keyof Skill, value: string) => void;
+    /** Extra action to display in header (e.g., Save button) */
+    extraHeaderAction?: React.ReactNode;
+    /** Language for labels (default: 'EN') */
+    lang?: 'EN' | 'PL';
 }
 
 /**
@@ -48,33 +64,35 @@ const skillLevelOptions = SKILL_LEVELS.map((level) => ({
 
 /**
  * Skills section of the resume form.
- * 
- * Features:
- * - Dynamic add/remove entries
- * - Skill name with proficiency level
- * - Grid layout for compact display
  */
 export function SkillsSection({
     skills,
     onAdd,
     onRemove,
     onUpdate,
+    extraHeaderAction,
+    lang = 'EN',
 }: SkillsSectionProps) {
+    const t = labels[lang];
+
     return (
         <Card
             sectionNumber={3}
-            title="Skills"
+            title={t.title}
             badgeColor="purple"
             headerAction={
-                <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={onAdd}
-                    leftIcon={<PlusIcon />}
-                    className="bg-purple-600 hover:bg-purple-700"
-                >
-                    Add Skill
-                </Button>
+                <div className="flex items-center gap-2">
+                    {extraHeaderAction}
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={onAdd}
+                        leftIcon={<PlusIcon />}
+                        className="bg-purple-600 hover:bg-purple-700"
+                    >
+                        {t.addSkill}
+                    </Button>
+                </div>
             }
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -90,7 +108,7 @@ export function SkillsSection({
                                 required
                                 value={skill.name}
                                 onChange={(e) => onUpdate(skill.id, 'name', e.target.value)}
-                                placeholder="e.g., React, Python, AWS"
+                                placeholder={t.placeholder}
                                 className="text-sm"
                             />
                             <Select

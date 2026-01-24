@@ -1,11 +1,20 @@
 /**
  * Frontend Types
  * 
- * Re-exports shared types and adds UI-specific factory functions.
- * Components import from: '@/types' or '@resume-builder/shared'
+ * Centralized type definitions for the frontend application.
  */
 
-// Re-export all shared types (so components can import from '@/types')
+import type {
+    Contact,
+    Skill,
+    Language,
+    Interest,
+    ExperienceInput,
+    CertificateInput,
+    ProjectInput,
+} from '@resume-builder/shared';
+
+// Re-export shared types
 export type {
     Contact,
     Experience,
@@ -18,80 +27,58 @@ export type {
     Language,
     LanguageLevel,
     ApiResponse,
+    ExperienceInput,
+    CertificateInput,
+    ProjectInput,
 } from '@resume-builder/shared';
-
-// Import types for local use in factory functions
-import type { Contact, Experience, Skill, Certificate, Project, Interest, Language } from '@resume-builder/shared';
 
 export type { resumeLanguage as LanguageCode } from '@resume-builder/shared';
 
-// ===========================================================================
-// UI-Specific Type (form data structure)
-// ===========================================================================
+// App-specific types
+export type ResumeLang = 'EN' | 'PL';
 
-export interface ResumeFormData {
+// API Response Types
+export interface ResumeResponse {
+    id: number;
+    user_id: number;
+    resume_lang: ResumeLang;
     contact: Contact;
-    experiences: Experience[];
+    summary?: string;
     skills: Skill[];
-    certificates: Certificate[];
-    projects: Project[];
-    interests: Interest[];
     languages: Language[];
+    interests: Interest[];
 }
 
-// ===========================================================================
-// Factory Functions (create empty form entries)
-// ===========================================================================
+export interface ExperienceRow {
+    id: number;
+    user_id: number;
+    resume_lang: ResumeLang;
+    experience: ExperienceInput;
+}
 
-export const createEmptyContact = (): Contact => ({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    linkedin: '',
-    github: '',
-    website: '',
-    location: '',
-});
+export interface CertificateRow {
+    id: number;
+    user_id: number;
+    resume_lang: ResumeLang;
+    certificate: CertificateInput;
+}
 
-export const createEmptyExperience = (id: string): Experience => ({
-    id,
-    company: '',
-    position: '',
-    startDate: '',
-    endDate: '',
-    current: false,
-    description: '',
-    highlights: [],
-});
+export interface ProjectRow {
+    id: number;
+    user_id: number;
+    resume_lang: ResumeLang;
+    project: ProjectInput;
+}
 
-export const createEmptySkill = (id: string): Skill => ({
-    id,
-    name: '',
-    level: 'intermediate',
-});
-
-export const createEmptyCertificate = (id: string): Certificate => ({
-    id,
-    name: '',
-    issuer: '',
-    date: '',
-});
-
-export const createEmptyProject = (id: string): Project => ({
-    id,
-    name: '',
-    description: '',
-    technologies: [],
-});
-
-export const createEmptyInterest = (id: string): Interest => ({
-    id,
-    name: '',
-});
-
-export const createEmptyLanguage = (id: string): Language => ({
-    id,
-    name: '',
-    level: 'Native',
-});
+// State Management Types
+export interface ResumeData {
+    resumeId: number | null;
+    contact: Contact;
+    summary: string;
+    skills: Skill[];
+    languages: Language[];
+    interests: Interest[];
+    experienceRows: ExperienceRow[];
+    certificateRows: CertificateRow[];
+    projectRows: ProjectRow[];
+}

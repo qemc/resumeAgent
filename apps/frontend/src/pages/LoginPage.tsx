@@ -80,10 +80,14 @@ export default function LoginPage() {
                 </form>
 
                 <p className="text-center text-muted-foreground text-sm mt-6">
-                    Don't have an account?{' '}
-                    <Link to="/register" className="text-primary hover:underline font-medium">
-                        Create one
-                    </Link>
+                    {import.meta.env.VITE_ENABLE_REGISTRATION !== 'false' && (
+                        <>
+                            Don't have an account?{' '}
+                            <Link to="/register" className="text-primary hover:underline font-medium">
+                                Create one
+                            </Link>
+                        </>
+                    )}
                 </p>
             </Card>
         </div>

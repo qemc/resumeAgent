@@ -1,6 +1,23 @@
-
 import { Card, CardItem, Input, Button } from '@/components/ui';
 import type { Interest } from '@/types';
+
+// Labels in English and Polish
+const labels = {
+    EN: {
+        title: 'Interests',
+        addInterest: 'Add Interest',
+        interest: 'Interest',
+        placeholder: 'Hiking, Photography, AI, etc.',
+        emptyMessage: 'No interests added yet. Click the button above to add one.',
+    },
+    PL: {
+        title: 'Zainteresowania',
+        addInterest: 'Dodaj zainteresowanie',
+        interest: 'Zainteresowanie',
+        placeholder: 'Turystyka, Fotografia, AI itp.',
+        emptyMessage: 'Nie dodano jeszcze zainteresowań. Kliknij powyższy przycisk, aby dodać.',
+    },
+};
 
 /**
  * Plus icon component.
@@ -27,6 +44,9 @@ export interface InterestsSectionProps {
     onAdd: () => void;
     onRemove: (id: string) => void;
     onUpdate: (id: string, field: keyof Interest, value: string) => void;
+    extraHeaderAction?: React.ReactNode;
+    /** Language for labels (default: 'EN') */
+    lang?: 'EN' | 'PL';
 }
 
 export function InterestsSection({
@@ -34,27 +54,34 @@ export function InterestsSection({
     onAdd,
     onRemove,
     onUpdate,
+    extraHeaderAction,
+    lang = 'EN',
 }: InterestsSectionProps) {
+    const t = labels[lang];
+
     return (
         <Card
             sectionNumber={7}
-            title="Interests"
+            title={t.title}
             badgeColor="orange"
             headerAction={
-                <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={onAdd}
-                    leftIcon={<PlusIcon />}
-                    className="bg-orange-600 hover:bg-orange-700"
-                >
-                    Add Interest
-                </Button>
+                <div className="flex items-center gap-2">
+                    {extraHeaderAction}
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={onAdd}
+                        leftIcon={<PlusIcon />}
+                        className="bg-orange-600 hover:bg-orange-700"
+                    >
+                        {t.addInterest}
+                    </Button>
+                </div>
             }
         >
             {interests.length === 0 ? (
                 <p className="text-muted-foreground text-center py-6">
-                    No interests added yet. Click the button above to add one.
+                    {t.emptyMessage}
                 </p>
             ) : (
                 <div className="space-y-4">
@@ -65,11 +92,11 @@ export function InterestsSection({
                             canRemove
                         >
                             <Input
-                                label="Interest"
+                                label={t.interest}
                                 required
                                 value={item.name}
                                 onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
-                                placeholder="Hiking, Photography, AI, etc."
+                                placeholder={t.placeholder}
                             />
                         </CardItem>
                     ))}

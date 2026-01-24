@@ -41,7 +41,8 @@ export const resumes = sqliteTable('resumes', {
         .notNull(),
     interests: text('interests', { mode: 'json' })
         .$type<Interest[]>()
-        .notNull()
+        .notNull(),
+    summary: text('summary')
 })
 
 export const experiences = sqliteTable('experiences', {
@@ -49,6 +50,7 @@ export const experiences = sqliteTable('experiences', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
     experience: text('experience', { mode: 'json' })
         .$type<ExperienceInput>()
         .notNull()
@@ -59,6 +61,7 @@ export const certificates = sqliteTable('certificates', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
     certificate: text('certificate', { mode: 'json' })
         .$type<CertificateInput>()
         .notNull()
@@ -69,6 +72,7 @@ export const projects = sqliteTable('projects', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
     project: text('project', { mode: 'json' })
         .$type<ProjectInput>()
         .notNull()

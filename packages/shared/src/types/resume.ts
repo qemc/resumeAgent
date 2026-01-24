@@ -65,6 +65,7 @@ export interface Certificate {
     date: string;
     expiryDate?: string;
     credentialId?: string;
+    url?: string;
 }
 
 /** Input type for creating/updating - no id (DB generates it) */
@@ -81,6 +82,7 @@ export interface Project {
     technologies: string[];
     startDate?: string;
     endDate?: string;
+    url?: string;
 }
 
 /** Input type for creating/updating - no id (DB generates it) */

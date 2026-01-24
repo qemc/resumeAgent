@@ -45,6 +45,12 @@ export const ERRORS = {
         code: 'SYS_001',
         message: 'Something went wrong',
         status: 500
+    },
+
+    REGISTRATION_DISABLED: {
+        code: 'AUTH_003',
+        message: 'Registration is currently disabled',
+        status: 403
     }
 } as const;
 
