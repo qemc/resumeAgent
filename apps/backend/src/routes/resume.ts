@@ -322,7 +322,6 @@ export async function resumeRoutes(app: FastifyInstance) {
             contact: parse.data.contact ?? existing.contact,
             skills: parse.data.skills ?? existing.skills,
             languages: parse.data.languages ?? existing.languages,
-            languages: parse.data.languages ?? existing.languages,
             interests: parse.data.interests ?? existing.interests,
             summary: parse.data.summary ?? existing.summary,
         };

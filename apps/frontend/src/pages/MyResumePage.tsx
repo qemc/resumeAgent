@@ -538,9 +538,9 @@ export function MyResumePage() {
     );
 
     return (
-        <div className="container mx-auto py-6 space-y-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
             {/* Language Toggle */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <h1 className="text-2xl font-bold">{t.title}</h1>
                 <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
                     <button

@@ -1,0 +1,1 @@
+ALTER TABLE `career_paths` ADD `resume_lang` text NOT NULL;

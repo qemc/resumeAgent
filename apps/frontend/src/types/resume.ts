@@ -82,3 +82,14 @@ export interface ResumeData {
     certificateRows: CertificateRow[];
     projectRows: ProjectRow[];
 }
+
+// Career Path Types
+export interface CareerPath {
+    id: number;
+    user_id: number;
+    resume_lang: ResumeLang;
+    name: string;
+    description: string;
+    createdAt: string;
+    updatedAt: string;
+}

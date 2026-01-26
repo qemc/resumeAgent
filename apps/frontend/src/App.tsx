@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import { MyResumePage } from '@/pages/MyResumePage';
+import { CareerPathsPage } from '@/pages/CareerPathsPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 
@@ -25,6 +26,16 @@ function App() {
                             </div>
                         </ProtectedRoute>
                     } />
+                    <Route path="/career-paths" element={
+                        <ProtectedRoute>
+                            <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+                                <Navbar />
+                                <main className="py-8">
+                                    <CareerPathsPage />
+                                </main>
+                            </div>
+                        </ProtectedRoute>
+                    } />
                     <Route path="/" element={<Navigate to="/my-resume" replace />} />
                 </Routes>
             </AuthProvider>
@@ -33,4 +44,3 @@ function App() {
 }
 
 export default App;
-

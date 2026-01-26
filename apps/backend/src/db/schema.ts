@@ -78,6 +78,44 @@ export const projects = sqliteTable('projects', {
         .notNull()
 })
 
+export const careerPaths = sqliteTable('career_paths', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    name: text('name').notNull(),
+    description: text('description').notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
 
+export const topics = sqliteTable('topics', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    career_path_id: integer('career_path_id')
+        .references(() => careerPaths.id, { onDelete: 'cascade' })
+        .notNull(),
+    experience_id: integer('experience_id')
+        .references(() => experiences.id, { onDelete: 'cascade' })
+        .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    original_text: text('original_text').notNull(),
+    topic_text: text('topic_text').notNull(),
+    approved: integer('approved', { mode: 'boolean' }).notNull().default(false),
+    rejection_comment: text('rejection_comment'),
+    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
 
+export const variations = sqliteTable('variations', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    topic_id: integer('topic_id')
+        .references(() => topics.id, { onDelete: 'cascade' })
+        .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    original_text: text('original_text').notNull(),
+    variation_text: text('variation_text').notNull(),
+    approved: integer('approved', { mode: 'boolean' }).notNull().default(false),
+    rejection_comment: text('rejection_comment'),
+    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
 
