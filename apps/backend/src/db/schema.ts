@@ -14,7 +14,13 @@ import {
     type ProjectInput
 } from "@resume-builder/shared";
 
+import type {
+    InferSelectModel
+} from 'drizzle-orm';
 
+export type ExperienceDb = InferSelectModel<typeof experiences>;
+export type AiEnhancedExperienceDb = InferSelectModel<typeof ai_enhanced_experience>;
+export type careerPathsDb = InferSelectModel<typeof careerPaths>;
 
 
 export const users = sqliteTable('users', {
@@ -53,8 +59,28 @@ export const experiences = sqliteTable('experiences', {
     resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
     experience: text('experience', { mode: 'json' })
         .$type<ExperienceInput>()
-        .notNull()
+        .notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 })
+
+
+export const ai_enhanced_experience = sqliteTable('ai_enhanced_experience', {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    experience_id: integer('experience_id').references(() => experiences.id, { onDelete: 'cascade' })
+        .notNull(),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
+    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    experience: text('experience', { mode: 'json' })
+        .$type<ExperienceInput>()
+        .notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
+
+
 
 export const certificates = sqliteTable('certificates', {
     id: integer('id').primaryKey({ autoIncrement: true }),
@@ -118,4 +144,6 @@ export const variations = sqliteTable('variations', {
     rejection_comment: text('rejection_comment'),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 })
+
+
 

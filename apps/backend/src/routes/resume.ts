@@ -134,7 +134,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         const parse = experienceSchema.partial().safeParse(req.body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        const updated = { ...existing.experience, ...parse.data };
+        const updated = { ...existing.experience, ...parse.data, updatedAt: new Date() };
 
         await db.update(experiences)
             .set({ experience: updated })

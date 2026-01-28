@@ -75,6 +75,7 @@ export async function careerPathRoutes(app: FastifyInstance) {
         const updateData: { name?: string; description?: string; updatedAt: Date } = {
             updatedAt: new Date(),
         };
+
         if (parse.data.name !== undefined) updateData.name = parse.data.name;
         if (parse.data.description !== undefined) updateData.description = parse.data.description;
 
