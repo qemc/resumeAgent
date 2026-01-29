@@ -24,6 +24,10 @@ await invokeTopicsAgent()
 
 // To do:
 
+// Implement data base saving capabilities for enhanced experience description 
+// Decide how to proceed with topics Agent. Sequence of the topic, choose the best 3 or less and push all others into one bullet point. 
+
+
 // Implement reasoning system to create an AI enhanced version of Experience 
 
 // Add types for db interactions

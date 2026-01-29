@@ -20,3 +20,4 @@ export type Workstream = z.infer<typeof workstreamSchema>
 export const architectOutput = z.object({
     workstreams: z.array(workstreamSchema).describe('description')
 })
+

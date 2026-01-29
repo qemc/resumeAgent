@@ -5,15 +5,18 @@ import {
 } from "@langchain/langgraph";
 import { State } from "./state";
 import {
-    architect
+    architect,
+    writer
 } from "./nodes";
 
 
 const workflow = new StateGraph(State)
     .addNode('architect', architect)
+    .addNode('writer', writer)
 
     .addEdge(START, 'architect')
-    .addEdge('architect', END)
+    .addEdge('architect', 'writer')
+    .addEdge('writer', END)
 
 export const enhanceAgent = workflow.compile()
 
@@ -40,6 +43,7 @@ export const enhanceAgent = workflow.compile()
 // 
 
 // Writer (what architect decide)
+
 
 // Editior
 
