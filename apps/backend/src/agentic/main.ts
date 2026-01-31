@@ -5,6 +5,7 @@ import {
 } from './utils';
 import { topicsAgent } from './topics/topics';
 import { enhanceAgent } from './enhance/enhance';
+import type { resumeLanguage } from '@resume-builder/shared';
 
 
 const testExp = await getExperience(11)
@@ -13,14 +14,22 @@ console.log(testExp)
 console.log(testCareer)
 
 
-async function invokeTopicsAgent() {
+async function invokeEnhanceAgent() {
     const result = await enhanceAgent.invoke({
         userSummary: testExp.experience.description,
-        workstreams: []
+        workstreams: [],
+        writerRedefinedTopics: [],
+        expId: testExp.id,
+        userId: testExp.user_id,
+        resumeLang: testExp.resume_lang as resumeLanguage,
+        operationStatus: 'init'
     })
+    return result
 }
 
-await invokeTopicsAgent()
+const result = await invokeEnhanceAgent()
+console.dir(result, { depth: null, colors: true });
+
 
 // To do:
 

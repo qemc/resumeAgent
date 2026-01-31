@@ -18,9 +18,14 @@ import type {
     InferSelectModel
 } from 'drizzle-orm';
 
+import type { WriterRedefinedTopic } from '../agentic/enhance/state';
+import { uniqueIndex } from 'drizzle-orm/sqlite-core'
+
+
+
 export type ExperienceDb = InferSelectModel<typeof experiences>;
 export type AiEnhancedExperienceDb = InferSelectModel<typeof ai_enhanced_experience>;
-export type careerPathsDb = InferSelectModel<typeof careerPaths>;
+export type CareerPathsDb = InferSelectModel<typeof careerPaths>;
 
 
 export const users = sqliteTable('users', {
@@ -74,11 +79,13 @@ export const ai_enhanced_experience = sqliteTable('ai_enhanced_experience', {
         .notNull(),
     resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
     experience: text('experience', { mode: 'json' })
-        .$type<ExperienceInput>()
+        .$type<WriterRedefinedTopic[]>()
         .notNull(),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-})
+}, (t) => ({
+    unq: uniqueIndex('one_enhance_per_exp').on(t.user_id, t.experience_id)
+}))
 
 
 
@@ -144,6 +151,5 @@ export const variations = sqliteTable('variations', {
     rejection_comment: text('rejection_comment'),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 })
-
 
 

@@ -6,6 +6,7 @@ import {
 import { State } from "./state";
 import {
     architect,
+    saver,
     writer
 } from "./nodes";
 
@@ -13,10 +14,11 @@ import {
 const workflow = new StateGraph(State)
     .addNode('architect', architect)
     .addNode('writer', writer)
-
+    .addNode('saver', saver)
     .addEdge(START, 'architect')
     .addEdge('architect', 'writer')
-    .addEdge('writer', END)
+    .addEdge('writer', 'saver')
+    .addEdge('saver', END)
 
 export const enhanceAgent = workflow.compile()
 

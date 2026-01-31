@@ -1,12 +1,19 @@
 import { Annotation } from "@langchain/langgraph";
 import z from "zod";
+import type { resumeLanguage } from "@resume-builder/shared";
+import type { AgentStatus } from "../../types/agent";
 
 
 // state
 export const State = Annotation.Root({
     userSummary: Annotation<string>(),
     workstreams: Annotation<Workstream[]>(),
-    writerRedefinedTopic: Annotation<WriterRedefinedTopic[]>()
+    writerRedefinedTopics: Annotation<WriterRedefinedTopic[]>(),
+    expId: Annotation<number>(),
+    userId: Annotation<number>(),
+    resumeLang: Annotation<resumeLanguage>(),
+    operationStatus: Annotation<AgentStatus>(),
+    error: Annotation<undefined | string>()
 })
 
 

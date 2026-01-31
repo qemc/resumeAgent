@@ -4,10 +4,12 @@ import { eq, and } from "drizzle-orm";
 import type {
     ExperienceDb,
     AiEnhancedExperienceDb,
-    careerPathsDb
+    CareerPathsDb
 } from '../db/schema';
+import type { WriterRedefinedTopic } from "./enhance/state";
+import type { resumeLanguage } from "@resume-builder/shared";
 
-export async function getCareerPath(careerPathId: number) {
+export async function getCareerPath(careerPathId: number): Promise<CareerPathsDb> {
 
     const result = db.query.careerPaths.findFirst({
         where: eq(careerPaths.id, careerPathId)
@@ -15,7 +17,7 @@ export async function getCareerPath(careerPathId: number) {
     return result
 }
 
-export async function getExperience(experienceId: number) {
+export async function getExperience(experienceId: number): Promise<ExperienceDb> {
 
     const result = await db.query.experiences.findFirst({
         where: eq(experiences.id, experienceId)
@@ -23,11 +25,32 @@ export async function getExperience(experienceId: number) {
     return result
 }
 
-export async function getAiEnhancedExperience(experienceId: number) {
+export async function getAiEnhancedExperience(experienceId: number): Promise<AiEnhancedExperienceDb> {
 
-    const result = await db.query.experiences.findFirst({
+    const result = await db.query.ai_enhanced_experience.findFirst({
         where: eq(ai_enhanced_experience.experience_id, experienceId)
     })
 
     return result
+}
+
+export async function upsertAiEnhancedExperience(AiEnhancedExperience: WriterRedefinedTopic[], userId: number, expId: number, resumeLang: resumeLanguage) {
+
+    const [inserted] = await db.insert(ai_enhanced_experience).values({
+        user_id: userId,
+        experience_id: expId,
+        resume_lang: resumeLang,
+        experience: AiEnhancedExperience,
+    }).onConflictDoUpdate({
+        target: [ai_enhanced_experience.user_id, ai_enhanced_experience.experience_id],
+
+        set: {
+            experience: AiEnhancedExperience,
+            updatedAt: new Date()
+        }
+    }).returning();
+
+    return {
+        status: 201
+    }
 }
