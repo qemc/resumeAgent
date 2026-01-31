@@ -6,16 +6,19 @@ import {
 import { State } from "./state";
 import {
     architect,
+    fill,
     saver,
     writer
 } from "./nodes";
 
 
 const workflow = new StateGraph(State)
+    .addNode('fill', fill)
     .addNode('architect', architect)
     .addNode('writer', writer)
     .addNode('saver', saver)
-    .addEdge(START, 'architect')
+    .addEdge(START, 'fill')
+    .addEdge('fill', 'architect')
     .addEdge('architect', 'writer')
     .addEdge('writer', 'saver')
     .addEdge('saver', END)

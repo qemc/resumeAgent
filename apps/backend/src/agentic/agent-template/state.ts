@@ -4,8 +4,18 @@ import z from "zod";
 
 // state
 export const State = Annotation.Root({
-    userSummary: Annotation<string>(),
-    workstreams: Annotation<Workstream[]>()
+    userSummary: Annotation<string>({
+        reducer: (x, y) => y ?? x,
+        default: () => ''
+    }),
+    workstreams: Annotation<Workstream[]>({
+        reducer: (x, y) => y ?? x,
+        default: () => []
+    }),
+    error: Annotation<undefined | string>({
+        reducer: (x, y) => y ?? x,
+        default: () => undefined
+    })
 })
 
 

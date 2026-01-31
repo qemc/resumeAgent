@@ -8,6 +8,7 @@ import type {
 } from '../db/schema';
 import type { WriterRedefinedTopic } from "./enhance/state";
 import type { resumeLanguage } from "@resume-builder/shared";
+import type { UnderlyingByteSource } from "stream/web";
 
 export async function getCareerPath(careerPathId: number): Promise<CareerPathsDb> {
 
@@ -25,7 +26,7 @@ export async function getExperience(experienceId: number): Promise<ExperienceDb>
     return result
 }
 
-export async function getAiEnhancedExperience(experienceId: number): Promise<AiEnhancedExperienceDb> {
+export async function getAiEnhancedExperience(experienceId: number): Promise<AiEnhancedExperienceDb | undefined> {
 
     const result = await db.query.ai_enhanced_experience.findFirst({
         where: eq(ai_enhanced_experience.experience_id, experienceId)

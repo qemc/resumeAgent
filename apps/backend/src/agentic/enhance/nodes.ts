@@ -14,8 +14,11 @@ import {
     processSingleWorkstreamPrompt
 } from "./prompts";
 import {
-    upsertAiEnhancedExperience
+    upsertAiEnhancedExperience,
+    getExperience
 } from "../utils";
+import { stat } from "fs";
+import type { resumeLanguage } from "@resume-builder/shared";
 
 const oai5_1_so_architect = oai5_1.withStructuredOutput(architectOutput)
 const oai5_1_so_writer = oai5_1.withStructuredOutput(writerRedefinedTopic)
@@ -26,7 +29,17 @@ const oai4omini_so_writer = oai4omini.withStructuredOutput(writerRedefinedTopic)
 const oai5nano_so_architect = oai5nano.withStructuredOutput(architectOutput)
 const oai5nano_so_writer = oai5nano.withStructuredOutput(writerRedefinedTopic)
 
+export async function fill(state: typeof State.State) {
 
+    const expId = state.expId
+    const rawExperience = await getExperience(expId)
+
+    return {
+        userSummary: rawExperience.experience.description,
+        userId: rawExperience.user_id,
+        resumeLang: rawExperience.resume_lang as resumeLanguage,
+    }
+}
 
 export async function architect(state: typeof State.State) {
 
@@ -42,8 +55,6 @@ export async function architect(state: typeof State.State) {
         workstreams: resutl.workstreams
     }
 }
-
-
 
 export async function writer(state: typeof State.State) {
 

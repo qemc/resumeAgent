@@ -6,14 +6,35 @@ import type { AgentStatus } from "../../types/agent";
 
 // state
 export const State = Annotation.Root({
-    userSummary: Annotation<string>(),
-    workstreams: Annotation<Workstream[]>(),
-    writerRedefinedTopics: Annotation<WriterRedefinedTopic[]>(),
+    userSummary: Annotation<string>({
+        reducer: (x, y) => y ?? x,
+        default: () => ''
+    }),
+    workstreams: Annotation<Workstream[]>({
+        reducer: (x, y) => y ?? x,
+        default: () => []
+    }),
+    writerRedefinedTopics: Annotation<WriterRedefinedTopic[]>({
+        reducer: (x, y) => y ?? x,
+        default: () => []
+    }),
     expId: Annotation<number>(),
-    userId: Annotation<number>(),
-    resumeLang: Annotation<resumeLanguage>(),
-    operationStatus: Annotation<AgentStatus>(),
-    error: Annotation<undefined | string>()
+    userId: Annotation<number>({
+        reducer: (x, y) => y ?? x,
+        default: () => 1
+    }),
+    resumeLang: Annotation<resumeLanguage>({
+        reducer: (x, y) => y ?? x,
+        default: () => 'EN'
+    }),
+    operationStatus: Annotation<AgentStatus>({
+        reducer: (x, y) => y ?? x,
+        default: () => 'init'
+    }),
+    error: Annotation<undefined | string>({
+        reducer: (x, y) => y ?? x,
+        default: () => undefined
+    })
 })
 
 

@@ -151,5 +151,3 @@ export const variations = sqliteTable('variations', {
     rejection_comment: text('rejection_comment'),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 })
-
-
