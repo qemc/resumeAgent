@@ -1,8 +1,9 @@
 import { Annotation } from "@langchain/langgraph";
-import type { WriterRedefinedTopic } from "../enhance/state";
-import type { AgentStatus } from "../../types/agent";
+import type {
+    AgentStatus,
+    WriterRedefinedTopic
+} from "../../types/agent";
 import type { resumeLanguage } from "@resume-builder/shared";
-
 
 export const State = Annotation.Root({
     writerRedefinedTopics: Annotation<WriterRedefinedTopic[]>({

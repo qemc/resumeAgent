@@ -82,8 +82,15 @@ export const createExperience = async (lang: ResumeLang, data: ExperienceInput):
     return response.data;
 };
 
-export const updateExperience = async (id: number, data: Partial<ExperienceInput>): Promise<ExperienceRow> => {
-    const response = await api.patch<ExperienceRow>(`/experiences/${id}`, data);
+export const updateExperience = async (
+    id: number,
+    data: Partial<ExperienceInput>,
+    options?: { descriptionChanged?: boolean }
+): Promise<ExperienceRow> => {
+    const response = await api.patch<ExperienceRow>(`/experiences/${id}`, {
+        ...data,
+        _descriptionChanged: options?.descriptionChanged ?? true,
+    });
     return response.data;
 };
 
@@ -108,8 +115,15 @@ export const createCertificate = async (lang: ResumeLang, data: CertificateInput
     return response.data;
 };
 
-export const updateCertificate = async (id: number, data: Partial<CertificateInput>): Promise<CertificateRow> => {
-    const response = await api.patch<CertificateRow>(`/certificates/${id}`, data);
+export const updateCertificate = async (
+    id: number,
+    data: Partial<CertificateInput>,
+    options?: { descriptionChanged?: boolean }
+): Promise<CertificateRow> => {
+    const response = await api.patch<CertificateRow>(`/certificates/${id}`, {
+        ...data,
+        _descriptionChanged: options?.descriptionChanged ?? true,
+    });
     return response.data;
 };
 
@@ -134,8 +148,15 @@ export const createProject = async (lang: ResumeLang, data: ProjectInput): Promi
     return response.data;
 };
 
-export const updateProject = async (id: number, data: Partial<ProjectInput>): Promise<ProjectRow> => {
-    const response = await api.patch<ProjectRow>(`/projects/${id}`, data);
+export const updateProject = async (
+    id: number,
+    data: Partial<ProjectInput>,
+    options?: { descriptionChanged?: boolean }
+): Promise<ProjectRow> => {
+    const response = await api.patch<ProjectRow>(`/projects/${id}`, {
+        ...data,
+        _descriptionChanged: options?.descriptionChanged ?? true,
+    });
     return response.data;
 };
 

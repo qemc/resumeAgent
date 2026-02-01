@@ -131,16 +131,29 @@ export async function resumeRoutes(app: FastifyInstance) {
         });
         if (!existing) throw new AppError(ERRORS.NOT_FOUND);
 
-        const parse = experienceSchema.partial().safeParse(req.body);
+        // Extract the descriptionChanged flag before validation
+        const body = req.body as Record<string, unknown>;
+        const descriptionChanged = body._descriptionChanged !== false;
+        delete body._descriptionChanged;
+
+        const parse = experienceSchema.partial().safeParse(body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        const updated = { ...existing.experience, ...parse.data, updatedAt: new Date() };
-
-        await db.update(experiences)
-            .set({ experience: updated })
-            .where(eq(experiences.id, id));
-
-        return { id, experience: updated };
+        // Only update timestamp if description changed
+        if (descriptionChanged) {
+            const now = new Date();
+            const updated = { ...existing.experience, ...parse.data, updatedAt: now };
+            await db.update(experiences)
+                .set({ experience: updated, updatedAt: now })
+                .where(eq(experiences.id, id));
+            return { id, experience: updated };
+        } else {
+            const updated = { ...existing.experience, ...parse.data };
+            await db.update(experiences)
+                .set({ experience: updated })
+                .where(eq(experiences.id, id));
+            return { id, experience: updated };
+        }
     });
 
     app.delete('/experiences/:id', { onRequest: [app.auth] }, async (req, reply) => {
@@ -189,10 +202,18 @@ export async function resumeRoutes(app: FastifyInstance) {
         });
         if (!existing) throw new AppError(ERRORS.NOT_FOUND);
 
-        const parse = certificateSchema.partial().safeParse(req.body);
+        // Extract the descriptionChanged flag before validation
+        const body = req.body as Record<string, unknown>;
+        const descriptionChanged = body._descriptionChanged !== false;
+        delete body._descriptionChanged;
+
+        const parse = certificateSchema.partial().safeParse(body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        const updated = { ...existing.certificate, ...parse.data };
+        // Only update timestamp if description/name changed
+        const updated = descriptionChanged
+            ? { ...existing.certificate, ...parse.data, updatedAt: new Date() }
+            : { ...existing.certificate, ...parse.data };
 
         await db.update(certificates)
             .set({ certificate: updated })
@@ -247,10 +268,18 @@ export async function resumeRoutes(app: FastifyInstance) {
         });
         if (!existing) throw new AppError(ERRORS.NOT_FOUND);
 
-        const parse = projectSchema.partial().safeParse(req.body);
+        // Extract the descriptionChanged flag before validation
+        const body = req.body as Record<string, unknown>;
+        const descriptionChanged = body._descriptionChanged !== false;
+        delete body._descriptionChanged;
+
+        const parse = projectSchema.partial().safeParse(body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        const updated = { ...existing.project, ...parse.data };
+        // Only update timestamp if description changed
+        const updated = descriptionChanged
+            ? { ...existing.project, ...parse.data, updatedAt: new Date() }
+            : { ...existing.project, ...parse.data };
 
         await db.update(projects)
             .set({ project: updated })

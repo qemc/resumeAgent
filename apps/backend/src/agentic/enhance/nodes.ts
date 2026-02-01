@@ -7,7 +7,7 @@ import {
 } from "../models";
 import {
     architectOutput,
-    writerRedefinedTopic
+    writerRedefinedTopicSchema
 } from "./state";
 import {
     architectPrompt,
@@ -19,15 +19,16 @@ import {
 } from "../utils";
 import { stat } from "fs";
 import type { resumeLanguage } from "@resume-builder/shared";
+import type { WriterRedefinedTopic } from "../../types/agent";
 
 const oai5_1_so_architect = oai5_1.withStructuredOutput(architectOutput)
-const oai5_1_so_writer = oai5_1.withStructuredOutput(writerRedefinedTopic)
+const oai5_1_so_writer = oai5_1.withStructuredOutput(writerRedefinedTopicSchema)
 
-const oai5mini_so_writer = oai5mini.withStructuredOutput(writerRedefinedTopic)
-const oai4omini_so_writer = oai4omini.withStructuredOutput(writerRedefinedTopic)
+const oai5mini_so_writer = oai5mini.withStructuredOutput(writerRedefinedTopicSchema)
+const oai4omini_so_writer = oai4omini.withStructuredOutput(writerRedefinedTopicSchema)
 
 const oai5nano_so_architect = oai5nano.withStructuredOutput(architectOutput)
-const oai5nano_so_writer = oai5nano.withStructuredOutput(writerRedefinedTopic)
+const oai5nano_so_writer = oai5nano.withStructuredOutput(writerRedefinedTopicSchema)
 
 export async function fill(state: typeof State.State) {
 
@@ -76,10 +77,19 @@ export async function writer(state: typeof State.State) {
     })
 
     const results = await Promise.all(resultsToBe)
-    console.dir(results, { depth: null, colors: true });
+
+    const resultsWithIds = results.map((item, index) => {
+        return {
+            redefinedTopic: item.redefinedTopic,
+            refinedQuotes: item.refinedQuotes,
+            id: index
+        } as WriterRedefinedTopic
+
+    })
+    console.dir(resultsWithIds, { depth: null, colors: true });
 
     return {
-        writerRedefinedTopics: results
+        writerRedefinedTopics: resultsWithIds
     }
 }
 

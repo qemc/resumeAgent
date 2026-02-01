@@ -51,6 +51,11 @@ export function MyResumePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [savingSection, setSavingSection] = useState<string | null>(null);
 
+    // Original descriptions - stored at load time to compare at save time
+    const [originalExperienceDescriptions, setOriginalExperienceDescriptions] = useState<Map<number, string>>(new Map());
+    const [originalCertificateNames, setOriginalCertificateNames] = useState<Map<number, string>>(new Map());
+    const [originalProjectDescriptions, setOriginalProjectDescriptions] = useState<Map<number, string>>(new Map());
+
     // Data for both languages
     const [enData, setEnData] = useState<ResumeData>(emptyResumeData);
     const [plData, setPlData] = useState<ResumeData>(emptyResumeData);
@@ -119,6 +124,25 @@ export function MyResumePage() {
                     certificateRows: plCerts,
                     projectRows: plProjs,
                 });
+
+                // Store original descriptions for save-time comparison
+                const expDescMap = new Map<number, string>();
+                [...enExps, ...plExps].forEach(row => {
+                    expDescMap.set(row.id, row.experience.description);
+                });
+                setOriginalExperienceDescriptions(expDescMap);
+
+                const certNameMap = new Map<number, string>();
+                [...enCerts, ...plCerts].forEach(row => {
+                    certNameMap.set(row.id, row.certificate.name);
+                });
+                setOriginalCertificateNames(certNameMap);
+
+                const projDescMap = new Map<number, string>();
+                [...enProjs, ...plProjs].forEach(row => {
+                    projDescMap.set(row.id, row.project.description);
+                });
+                setOriginalProjectDescriptions(projDescMap);
             } catch (error) {
                 console.error('Failed to load resume data:', error);
             } finally {
@@ -373,13 +397,27 @@ export function MyResumePage() {
     };
 
     const handleSaveExperiences = async () => {
+        if (currentData.experienceRows.length === 0) {
+            return;
+        }
+
         setSavingSection('experiences');
         try {
             await Promise.all(
-                currentData.experienceRows.map(row =>
-                    updateExperience(row.id, row.experience)
-                )
+                currentData.experienceRows.map(row => {
+                    const originalDesc = originalExperienceDescriptions.get(row.id);
+                    const descriptionChanged = originalDesc !== row.experience.description;
+                    return updateExperience(row.id, row.experience, { descriptionChanged });
+                })
             );
+            // Update originals to reflect saved state
+            setOriginalExperienceDescriptions(prev => {
+                const newMap = new Map(prev);
+                currentData.experienceRows.forEach(row => {
+                    newMap.set(row.id, row.experience.description);
+                });
+                return newMap;
+            });
         } catch (error) {
             console.error('Failed to save experiences:', error);
         } finally {
@@ -436,13 +474,27 @@ export function MyResumePage() {
     };
 
     const handleSaveCertificates = async () => {
+        if (currentData.certificateRows.length === 0) {
+            return;
+        }
+
         setSavingSection('certificates');
         try {
             await Promise.all(
-                currentData.certificateRows.map(row =>
-                    updateCertificate(row.id, row.certificate)
-                )
+                currentData.certificateRows.map(row => {
+                    const originalName = originalCertificateNames.get(row.id);
+                    const descriptionChanged = originalName !== row.certificate.name;
+                    return updateCertificate(row.id, row.certificate, { descriptionChanged });
+                })
             );
+            // Update originals to reflect saved state
+            setOriginalCertificateNames(prev => {
+                const newMap = new Map(prev);
+                currentData.certificateRows.forEach(row => {
+                    newMap.set(row.id, row.certificate.name);
+                });
+                return newMap;
+            });
         } catch (error) {
             console.error('Failed to save certificates:', error);
         } finally {
@@ -499,13 +551,27 @@ export function MyResumePage() {
     };
 
     const handleSaveProjects = async () => {
+        if (currentData.projectRows.length === 0) {
+            return;
+        }
+
         setSavingSection('projects');
         try {
             await Promise.all(
-                currentData.projectRows.map(row =>
-                    updateProject(row.id, row.project)
-                )
+                currentData.projectRows.map(row => {
+                    const originalDesc = originalProjectDescriptions.get(row.id);
+                    const descriptionChanged = originalDesc !== row.project.description;
+                    return updateProject(row.id, row.project, { descriptionChanged });
+                })
             );
+            // Update originals to reflect saved state
+            setOriginalProjectDescriptions(prev => {
+                const newMap = new Map(prev);
+                currentData.projectRows.forEach(row => {
+                    newMap.set(row.id, row.project.description);
+                });
+                return newMap;
+            });
         } catch (error) {
             console.error('Failed to save projects:', error);
         } finally {

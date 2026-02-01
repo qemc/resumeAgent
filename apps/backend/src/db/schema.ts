@@ -18,7 +18,7 @@ import type {
     InferSelectModel
 } from 'drizzle-orm';
 
-import type { WriterRedefinedTopic } from '../agentic/enhance/state';
+import type { WriterRedefinedTopic } from '../types/agent';
 import { uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 
@@ -132,7 +132,9 @@ export const topics = sqliteTable('topics', {
         .references(() => experiences.id, { onDelete: 'cascade' })
         .notNull(),
     resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
-    original_text: text('original_text').notNull(),
+    previous_options: text('previous_options', { mode: 'json' })
+        .$type<ProjectInput>()
+        .notNull(),
     topic_text: text('topic_text').notNull(),
     approved: integer('approved', { mode: 'boolean' }).notNull().default(false),
     rejection_comment: text('rejection_comment'),

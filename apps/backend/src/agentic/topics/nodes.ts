@@ -42,8 +42,6 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
 }
 
 export async function testNode(state: typeof State.State) {
-
-
     return {
         experienceId: ''
     }
@@ -52,4 +50,9 @@ export async function testNode(state: typeof State.State) {
 // To do:
 // Continuee topics generation Agent
 // Figure out how to handle single Topic Generation
+// First Topic generation:
+// -> 
 // Figure out human in the loop with react app
+// Single topic generation prompt? 
+// 
+// Does a single prompt can handle the Topic Generation? 
