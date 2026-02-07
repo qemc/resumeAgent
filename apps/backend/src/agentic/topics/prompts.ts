@@ -27,7 +27,9 @@ export const singleTopicPrompt = defaultPrompt(
     ### INPUT
     Topic initial name: {topicName}
     Topic description: {topicDescription}
+    Career path name: {careerPathName}
     Career path description: {careerPathDescription}
+    {userHint}
 
     `
 )

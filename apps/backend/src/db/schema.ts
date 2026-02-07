@@ -18,7 +18,10 @@ import type {
     InferSelectModel
 } from 'drizzle-orm';
 
-import type { WriterRedefinedTopic } from '../types/agent';
+import type {
+    Topic,
+    WriterRedefinedTopic
+} from '../types/agent';
 import { uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 
@@ -128,28 +131,15 @@ export const topics = sqliteTable('topics', {
     career_path_id: integer('career_path_id')
         .references(() => careerPaths.id, { onDelete: 'cascade' })
         .notNull(),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
     experience_id: integer('experience_id')
         .references(() => experiences.id, { onDelete: 'cascade' })
         .notNull(),
     resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
-    previous_options: text('previous_options', { mode: 'json' })
-        .$type<ProjectInput>()
-        .notNull(),
-    topic_text: text('topic_text').notNull(),
-    approved: integer('approved', { mode: 'boolean' }).notNull().default(false),
-    rejection_comment: text('rejection_comment'),
+    topic_text: text('topic', { mode: 'json' })
+        .$type<Topic>(),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 })
 
-export const variations = sqliteTable('variations', {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    topic_id: integer('topic_id')
-        .references(() => topics.id, { onDelete: 'cascade' })
-        .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
-    original_text: text('original_text').notNull(),
-    variation_text: text('variation_text').notNull(),
-    approved: integer('approved', { mode: 'boolean' }).notNull().default(false),
-    rejection_comment: text('rejection_comment'),
-    createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-})

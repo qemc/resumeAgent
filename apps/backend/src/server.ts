@@ -15,6 +15,7 @@ app.register(fastifyCors, {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 });
+
 app.register(fastifyJwt, { secret: JWT_SECRET_KEY });
 
 app.register(cookie, {

@@ -16,6 +16,11 @@ export const ERRORS = {
         message: 'You must be logged in to access this',
         status: 401
     },
+    AI_ERROR: {
+        code: 'AI_001',
+        message: 'An AI agent error',
+        status: 466
+    },
 
     USER_NOT_FOUND: {
         code: 'USER_001',

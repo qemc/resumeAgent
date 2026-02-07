@@ -77,19 +77,8 @@ export async function writer(state: typeof State.State) {
     })
 
     const results = await Promise.all(resultsToBe)
-
-    const resultsWithIds = results.map((item, index) => {
-        return {
-            redefinedTopic: item.redefinedTopic,
-            refinedQuotes: item.refinedQuotes,
-            id: index
-        } as WriterRedefinedTopic
-
-    })
-    console.dir(resultsWithIds, { depth: null, colors: true });
-
     return {
-        writerRedefinedTopics: resultsWithIds
+        writerRedefinedTopics: results
     }
 }
 

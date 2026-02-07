@@ -8,9 +8,10 @@ import { topicsAgent } from './topics/topics';
 import { enhanceAgent } from './enhance/enhance';
 import type { resumeLanguage } from '@resume-builder/shared';
 import { generateSingleTopic } from './topics/singleTopic';
+import type { WriterRedefinedTopic } from '../types/agent';
 
 const testExp = await getExperience(12)
-const testCareer = await getCareerPath(7)
+const testCareer = await getCareerPath(10)
 const enhancedExp = await getAiEnhancedExperience(12)
 
 console.log(testExp)
@@ -25,20 +26,26 @@ export async function invokeEnhanceAgent() {
 }
 
 
-const result = invokeEnhanceAgent()
-console.dir(result, { depth: null, colors: true });
+
+// const result = invokeEnhanceAgent()
+// console.dir(result, { depth: null, colors: true });
+
+const test = {
+    redefinedTopic: "Analytical Data Lake On-Premises Integration with AWS ETL",
+    refinedQuotes: [
+        "Designed and implemented end-to-end Analytical Data Lake integration with an on-premises system using AWS services (Step Functions", "EventBridge, Athena, IAM, Lambda); developed the ETL workflow to move files between sources using TypeScript and AWS CDK; collaborated with the on-prem vendor to define technical requirements and accepted data formats; obtained stakeholder approval and delivered the solution."
+    ]
+} as WriterRedefinedTopic
+
+const topicsTest = await topicsAgent.invoke({
+    expId: 12,
+    careerPathId: 10
+})
+console.dir(topicsTest, { depth: null })
 
 
 // To do:
+// Finish endpoints for topics
+// Finish node for refining text of the bullet poitns (to avoid any repetitions within other topics, those needs to be aligned) Maybe align those also with writing style of the user?
+// Finish applying dual language support for agentic use cases
 
-// Figure out how what changes were made to backend by Antigravity for description update
-// Focus on single topic generator.
-// In case of experience description change, the notification should be available for the user. The notification can be later on confirmed
-// To implement => Enhance validation !!! To check if the update of the experience was significant that it needs to regenerate the enhancement. 
-// If the validation was true, the expirience gets validated, if not, it keeps current enhancement option 
-
-// The DB schema needs to be changed and variations to be removed. Topics to became lowest item in the structure for experience
-// Single topic needs to be assgined to the possible topics, from AI enhanced experience. 
-// In case of edition of experience and positive validation (new enhancement needed) all topics under relevant experience across all in career paths gets deleted. 
-// The enhancement needs to validate not all items at one, but needs to say which option may need a replacement or maybe new topic has arise. 
-// In this case there also needs to be a correct handler on the side of career paths. 

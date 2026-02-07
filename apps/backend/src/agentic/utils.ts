@@ -6,9 +6,8 @@ import type {
     AiEnhancedExperienceDb,
     CareerPathsDb
 } from '../db/schema';
-import type { WriterRedefinedTopic } from "./enhance/state";
+import type { WriterRedefinedTopic } from "../types/agent";
 import type { resumeLanguage } from "@resume-builder/shared";
-import type { UnderlyingByteSource } from "stream/web";
 
 export async function getCareerPath(careerPathId: number): Promise<CareerPathsDb> {
 

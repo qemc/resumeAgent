@@ -5,6 +5,8 @@ import {
 } from '../utils';
 import { enhanceAgent } from '../enhance/enhance';
 import type { resumeLanguage } from '@resume-builder/shared';
+import { generateSingleTopic } from './singleTopic';
+
 
 
 export async function checkAiEnhancedExperience(state: typeof State.State) {
@@ -41,18 +43,36 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
     }
 }
 
-export async function testNode(state: typeof State.State) {
+export async function generateTopics(state: typeof State.State) {
+
+    const preTopics = state.writerRedefinedTopics
+    const careerPath = state.careerPath
+    const lang = state.resumeLang
+
+    const topics = preTopics.map((item) => {
+        return generateSingleTopic(careerPath, item, lang)
+    })
+
+    const result = await Promise.all(topics)
     return {
-        experienceId: ''
+        careerPathTopics: result
     }
 }
 
-// To do:
-// Continuee topics generation Agent
-// Figure out how to handle single Topic Generation
-// First Topic generation:
-// -> 
-// Figure out human in the loop with react app
-// Single topic generation prompt? 
-// 
-// Does a single prompt can handle the Topic Generation? 
+export async function unifyText(state: typeof State.State) {
+
+    const lang = state.resumeLang;
+    let allTopics = ''
+    if (lang === 'PL') {
+
+        allTopics = state.careerPathTopics.map((item, index) => {
+            `Topic${index}: ${item}`
+        }).join('\n')
+    } else {
+
+        allTopics = state.careerPathTopics.map((item, index) => {
+            `Topic${index}: ${item}`
+        }).join('\n')
+    }
+}
+

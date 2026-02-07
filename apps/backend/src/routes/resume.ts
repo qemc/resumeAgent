@@ -178,6 +178,7 @@ export async function resumeRoutes(app: FastifyInstance) {
     });
 
     app.post('/certificates', { onRequest: [app.auth] }, async (req, reply) => {
+
         const bodySchema = z.object({
             resume_lang: z.enum(['EN', 'PL']),
             certificate: certificateSchema,
