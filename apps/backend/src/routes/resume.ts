@@ -107,6 +107,7 @@ export async function resumeRoutes(app: FastifyInstance) {
     });
 
     app.post('/experiences', { onRequest: [app.auth] }, async (req, reply) => {
+
         const bodySchema = z.object({
             resume_lang: z.enum(['EN', 'PL']),
             experience: experienceSchema,

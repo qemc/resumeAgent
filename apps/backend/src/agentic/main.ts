@@ -37,15 +37,18 @@ const test = {
     ]
 } as WriterRedefinedTopic
 
+
+
 const topicsTest = await topicsAgent.invoke({
     expId: 12,
     careerPathId: 10
 })
+
+
+
 console.dir(topicsTest, { depth: null })
 
 
 // To do:
 // Finish endpoints for topics
-// Finish node for refining text of the bullet poitns (to avoid any repetitions within other topics, those needs to be aligned) Maybe align those also with writing style of the user?
-// Finish applying dual language support for agentic use cases
-
+// Figure out potential improvement in code structure

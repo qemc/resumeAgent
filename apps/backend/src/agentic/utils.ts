@@ -1,6 +1,7 @@
 import { db } from "../db";
 import { ai_enhanced_experience, careerPaths, experiences } from "../db/schema";
 import { eq, and } from "drizzle-orm";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 import type {
     ExperienceDb,
     AiEnhancedExperienceDb,
@@ -11,7 +12,7 @@ import type { resumeLanguage } from "@resume-builder/shared";
 
 export async function getCareerPath(careerPathId: number): Promise<CareerPathsDb> {
 
-    const result = db.query.careerPaths.findFirst({
+    const result = await db.query.careerPaths.findFirst({
         where: eq(careerPaths.id, careerPathId)
     })
     return result
@@ -53,4 +54,17 @@ export async function upsertAiEnhancedExperience(AiEnhancedExperience: WriterRed
     return {
         status: 201
     }
+}
+
+export function defaultPrompt(systemPrompt: string, userPrompt: string) {
+    return ChatPromptTemplate.fromMessages([
+        ["system", systemPrompt],
+        ["human", userPrompt]
+    ])
+}
+
+export async function updateAiEnhanceLastUpdate(expId: number) {
+    await db.update(ai_enhanced_experience)
+        .set({ updatedAt: new Date() })
+        .where(eq(ai_enhanced_experience.experience_id, expId))
 }

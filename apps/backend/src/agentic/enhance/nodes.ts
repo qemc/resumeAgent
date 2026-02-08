@@ -10,8 +10,10 @@ import {
     writerRedefinedTopicSchema
 } from "./state";
 import {
-    architectPrompt,
-    processSingleWorkstreamPrompt
+    architectPromptEn,
+    architectPromptPl,
+    processSingleWorkstreamPromptEn,
+    processSingleWorkstreamPromptPl
 } from "./prompts";
 import {
     upsertAiEnhancedExperience,
@@ -44,6 +46,9 @@ export async function fill(state: typeof State.State) {
 
 export async function architect(state: typeof State.State) {
 
+    let architectPrompt = architectPromptEn
+    if (state.resumeLang !== 'EN') architectPrompt = architectPromptPl
+
     const userSum = state.userSummary
     const resultChain = architectPrompt.pipe(oai5nano_so_architect)
 
@@ -58,6 +63,10 @@ export async function architect(state: typeof State.State) {
 }
 
 export async function writer(state: typeof State.State) {
+
+    let processSingleWorkstreamPrompt = processSingleWorkstreamPromptEn
+    if (state.resumeLang !== 'EN') processSingleWorkstreamPrompt = processSingleWorkstreamPromptPl
+
 
     const workstreams = state.workstreams
 

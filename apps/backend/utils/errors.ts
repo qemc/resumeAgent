@@ -1,4 +1,3 @@
-
 export const ERRORS = {
 
     INVALID_REQUEST: {
@@ -63,8 +62,10 @@ export class AppError extends Error {
     public readonly code: string;
     public readonly statusCode: number;
 
-    constructor(errorType: typeof ERRORS[keyof typeof ERRORS]) {
-        super(errorType.message)
+    constructor(errorType: typeof ERRORS[keyof typeof ERRORS], details?: string) {
+        const finallMessage = details ? `${errorType.message}: ${details}` : errorType.message;
+
+        super(finallMessage)
 
         this.code = errorType.code;
         this.statusCode = errorType.status;

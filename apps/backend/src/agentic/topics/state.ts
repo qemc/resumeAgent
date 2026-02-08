@@ -2,7 +2,8 @@ import { Annotation } from "@langchain/langgraph";
 import type {
     AgentStatus,
     WriterRedefinedTopic,
-    CareerPath
+    CareerPath,
+    Topic
 } from "../../types/agent";
 import type { resumeLanguage } from "@resume-builder/shared";
 
@@ -20,7 +21,7 @@ export const State = Annotation.Root({
         reducer: (x, y) => y ?? x,
         default: () => ({ name: '', description: '' })
     }),
-    careerPathTopics: Annotation<string[]>({
+    careerPathTopics: Annotation<Topic[]>({
         reducer: (x, y) => y ?? x,
         default: () => []
     }),

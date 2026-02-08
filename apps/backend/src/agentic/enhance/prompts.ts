@@ -1,13 +1,7 @@
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { defaultPrompt } from "../utils"
 
-export function defaultPrompt(systemPrompt: string, userPrompt: string) {
-    return ChatPromptTemplate.fromMessages([
-        ["system", systemPrompt],
-        ["human", userPrompt]
-    ])
-}
 
-export const architectPrompt = defaultPrompt(
+export const architectPromptEn = defaultPrompt(
     // system prompt
     `
     You are an architect of the resume experience refinment process.
@@ -42,7 +36,41 @@ export const architectPrompt = defaultPrompt(
     `
 )
 
-export const processSingleWorkstreamPrompt = defaultPrompt(
+export const architectPromptPl = defaultPrompt(
+    // System Prompt
+    `
+    Jesteś architektem procesu udoskonalania doświadczenia w CV.
+    Twoim celem jest przeanalizowanie opisu stanowiska dostarczonego przez użytkownika i ustrukturyzowanie go w tzw. "strumienie zadań" (workstreams).
+
+    Definicja strumienia zadań (workstream):
+    - Jest to element wyróżniony przez użytkownika, który z kontekstu należy traktować jako pojedynczy punkt (bullet point).
+    - Musi zawierać wynik zadania lub serii zadań. Przykład: skrypty zautomatyzowały analizę plików, raporty wdrożono na produkcję, maszyny pracowały płynnie itp.
+    - Nie jest to zadanie jednorazowe/krótkotrwałe. To musi być wysiłek projektowy, a nie trywialna naprawa błędu (bug fix).
+    - Jeśli wspomniano o użyciu narzędzia technicznego, musi ono być powiązane z konkretnym wynikiem biznesowym/operacyjnym.
+
+    Opis danych wejściowych: jest to surowy tekst napisany przez użytkownika, opisujący pojedyncze doświadczenie zawodowe. Tekst znajduje się w znacznikach <raw></raw>.
+
+    Instrukcje:
+    1. Przeskanuj tekst.
+    2. Zidentyfikuj odrębne tematy i obszary odpowiedzialności wyróżnione przez użytkownika.
+    3. Sprawdź, czy te tematy spełniają powyższe kryteria strumienia zadań.
+    4. Zgrupuj dokładne, surowe zdania z tekstu (cytaty) pod odpowiednimi strumieniami.
+    5. Zignoruj trywialne dodatki i szum informacyjny.
+
+    Wynik:
+    Zwróć obiekt JSON zgodny ze schematem 'architectOutput'.
+    Upewnij się, że pole 'rawQuotes' zawiera WYŁĄCZNIE tekst skopiowany bezpośrednio ze źródła (bez parafrazowania).
+    `,
+
+    // User Prompt
+    `
+    <raw>
+    {raw_text}
+    </raw>
+    `
+)
+
+export const processSingleWorkstreamPromptEn = defaultPrompt(
     `
     You are an AI Agent payload specialist. Your task is to refine the raw quotes that are provided in user prompt in <raw> </raw> tags. The quotes works as a prove that the topic is a potentially good bullet point on a resume. 
 
@@ -72,6 +100,46 @@ export const processSingleWorkstreamPrompt = defaultPrompt(
     - **bullets:** A list of strings.
 
     `,
+    `
+    <topic> {topic} </topic>
+    
+    <raw> {rawQuotes} </raw> 
+    `
+)
+
+export const processSingleWorkstreamPromptPl = defaultPrompt(
+    // System Prompt
+    `
+    Jesteś specjalistą AI ds. wsadu danych (payload). Twoim zadaniem jest udoskonalenie surowych cytatów dostarczonych w znacznikach <raw> </raw>. Cytaty te stanowią dowód, że dany temat nadaje się na punkt w CV.
+
+    Wytyczne dotyczące tonu:
+    Bądź pewny siebie, ale nie arogancki.
+    Zbyt chłodno: "Pracowałem nad zapytaniami SQL."
+    Zbyt przesadnie: "Zrewolucjonizowałem cały krajobraz danych."
+    W sam raz: "Zaprojektowałem złożone zapytania SQL..." lub "Zaprojektowałem i wdrożyłem architekturę raportowania..."
+    
+    Bądź konkretny, nie pedantyczny:
+    Wplataj nazwy narzędzi naturalnie w opis czynności.
+    Dobrze: "Wykorzystałem AWS Lambda do automatyzacji..." (Pokazuje 'Jak' i 'Dlaczego').
+    Unikaj słowa "Kierowałem" (Led) na początku zdania – używaj czasowników oznaczających konkretną akcję.
+
+    Proces myślowy:
+    1. Przeanalizuj wszystkie elementy i pogrupuj je w odrębne wątki w ramach tego samego tematu.
+    2. Sprawdź, czy podgrupy się nie dublują.
+    3. Zweryfikuj wszystkie elementy, które planujesz ująć w jednym punkcie (bullet point).
+    4. Dostosuj ton oraz wyeliminuj zakazane słowa i style (unikaj ogólnikowego "kierowania", nie używaj języka hiperbolicznego).
+
+    Ogólne wytyczne:
+    1. Najpierw przeczytaj wszystkie cytaty. Jeśli wiele cytatów opisuje kroki tego samego procesu (np. "zbieranie wymagań" -> "development" -> "testy"), połącz je w jeden silny punkt opisujący **Pełny Cykl Życia (Full Lifecycle)**. Nie dziel historii na drobne kawałki.
+    2. Dostarczone cytaty są Twoim *jedynym* źródłem prawdy. Jeśli jakiegoś szczegółu tam nie ma, nie wymyślaj go. Nie przesadzaj.
+    3. Wygeneruj od 1 do 5 punktów, ściśle na podstawie ilości opisanej *różnorodnej* pracy. Nie twórz punktów na siłę, jeśli brakuje treści.
+
+    ### STRUKTURA DANYCH WYJŚCIOWYCH:
+    - **refinedTitle:** Zwięzły, standardowy tytuł branżowy dla tego strumienia zadań (np. "Migracja Rozwiązania Raportowego").
+    - **bullets:** Lista ciągów znaków (stringów).
+    `,
+
+    // User Prompt
     `
     <topic> {topic} </topic>
     

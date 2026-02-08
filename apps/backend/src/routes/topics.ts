@@ -47,7 +47,7 @@ export async function careerPathRoutes(app: FastifyInstance) {
         return items
     });
 
-    // save all topics related to single experience - UPSERT
+    // save all topics related to single experience
 
     app.patch('/topcis/:careerPath/:lang/:experience/:id', { onRequest: [app.auth] }, async (req, reply) => {
 
@@ -91,7 +91,10 @@ export async function careerPathRoutes(app: FastifyInstance) {
 
 
     // regenerate all topics once again (only here the items would need to be inserted to the data base upon creation be an agent) This would return the ids, of freshly created items, once the answer is received, the frontend would call get option
-
+    // Run generate all topics agent
+    // Insert those into the data base
+    // Query those from the data base once again, to get items with ID assigned
+    // Return all items to the frontend
 
     app.post('/topics/generate_all/:careerPath/:lang/:experience', { onRequest: app.auth }, async (req, reply) => {
 
@@ -99,14 +102,14 @@ export async function careerPathRoutes(app: FastifyInstance) {
 
         if (!newTopics) throw new AppError(ERRORS.AI_ERROR);
 
-
-
-
-
     })
 
 
     // regenerate sngle topic
+    // Run generate all topics agent
+    // Insert the item into the data base
+    // Query the item from the data base once again, to get item's new ID assigned
+    // Return a single item to the frontend
 
 
 

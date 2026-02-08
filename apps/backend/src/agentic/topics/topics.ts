@@ -6,15 +6,18 @@ import {
 import { State } from "./state";
 import {
     checkAiEnhancedExperience,
-    generateTopics
+    generateTopics,
+    unifyText
 } from "./nodes";
 
 
 const workflow = new StateGraph(State)
     .addNode('check', checkAiEnhancedExperience)
     .addNode('topics', generateTopics)
+    .addNode('unify', unifyText)
     .addEdge(START, 'check')
     .addEdge('check', 'topics')
-    .addEdge('topics', END)
+    .addEdge('topics', 'unify')
+    .addEdge('unify', END)
 
 export const topicsAgent = workflow.compile()
