@@ -93,3 +93,23 @@ export interface CareerPath {
     createdAt: string;
     updatedAt: string;
 }
+
+// Topic Types
+export interface TopicText {
+    topic: string;
+    preTopic: {
+        redefinedTopic: string;
+        refinedQuotes: string[];
+    };
+}
+
+export interface TopicRow {
+    id: number;
+    career_path_id: number;
+    user_id: number;
+    experience_id: number;
+    resume_lang: ResumeLang;
+    topic_text: TopicText;
+    createdAt: string;
+}
+

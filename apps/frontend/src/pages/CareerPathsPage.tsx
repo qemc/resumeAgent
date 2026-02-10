@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui';
 import { Card } from '@/components/ui';
 import { Input } from '@/components/ui';
@@ -10,82 +11,9 @@ import {
     updateCareerPath,
     deleteCareerPath,
 } from '@/services/careerPaths';
+import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
 
-/**
- * Delete Confirmation Modal Component
- */
-function DeleteConfirmModal({
-    isOpen,
-    careerPathName,
-    onConfirm,
-    onCancel,
-    lang,
-}: {
-    isOpen: boolean;
-    careerPathName: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-    lang: ResumeLang;
-}) {
-    if (!isOpen) return null;
 
-    const labels = {
-        EN: {
-            title: 'Delete Career Path',
-            message: 'Are you sure you want to delete',
-            warning: 'This action cannot be undone.',
-            confirm: 'Delete',
-            cancel: 'Cancel',
-        },
-        PL: {
-            title: 'Usuń Ścieżkę Kariery',
-            message: 'Czy na pewno chcesz usunąć',
-            warning: 'Tej operacji nie można cofnąć.',
-            confirm: 'Usuń',
-            cancel: 'Anuluj',
-        },
-    };
-
-    const t = labels[lang];
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                onClick={onCancel}
-            />
-
-            {/* Modal */}
-            <div className="relative bg-white rounded-xl shadow-2xl p-6 sm:p-8 max-w-md w-full mx-4 animate-in fade-in zoom-in duration-200">
-                <h2 className="text-xl font-bold text-foreground mb-4">
-                    {t.title}
-                </h2>
-                <p className="text-muted-foreground mb-2">
-                    {t.message}:
-                </p>
-                <p className="font-semibold text-foreground mb-4 p-3 bg-gray-100 rounded-lg">
-                    "{careerPathName}"
-                </p>
-                <p className="text-sm text-red-500 mb-6">
-                    ⚠️ {t.warning}
-                </p>
-                <div className="flex gap-3 justify-end">
-                    <Button variant="outline" onClick={onCancel}>
-                        {t.cancel}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        className="bg-red-500 text-white hover:bg-red-600"
-                        onClick={onConfirm}
-                    >
-                        {t.confirm}
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 /**
  * Career Paths Page
@@ -94,6 +22,7 @@ function DeleteConfirmModal({
  * Users can add, edit, and delete career paths.
  */
 export function CareerPathsPage() {
+    const navigate = useNavigate();
     const [activeLang, setActiveLang] = useState<ResumeLang>('EN');
     const [isLoading, setIsLoading] = useState(true);
     const [careerPaths, setCareerPaths] = useState<CareerPath[]>([]);
@@ -229,7 +158,7 @@ export function CareerPathsPage() {
             {/* Delete Confirmation Modal */}
             <DeleteConfirmModal
                 isOpen={!!deleteModalPath}
-                careerPathName={deleteModalPath?.name || ''}
+                itemName={deleteModalPath?.name || ''}
                 onConfirm={handleConfirmDelete}
                 onCancel={() => setDeleteModalPath(null)}
                 lang={activeLang}
@@ -328,7 +257,11 @@ export function CareerPathsPage() {
                                             {path.description || t.descriptionPlaceholder}
                                         </p>
                                         <div className="flex flex-wrap gap-2 pt-4 border-t">
-                                            <Button size="sm" variant="outline">
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => navigate(`/career-paths/${path.id}`)}
+                                            >
                                                 {t.open}
                                             </Button>
                                             <Button

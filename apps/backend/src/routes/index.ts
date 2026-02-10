@@ -3,6 +3,7 @@ import { resumeRoutes } from './resume';
 import { authRoutes } from './auth';
 import { refreshRoutes } from './refresh';
 import { careerPathRoutes } from './careerPaths';
+import { topicRoutes } from './topics';
 
 export async function registerRoutes(fastify: FastifyInstance) {
     // Register all route modules
@@ -10,4 +11,5 @@ export async function registerRoutes(fastify: FastifyInstance) {
     await fastify.register(authRoutes);
     await fastify.register(refreshRoutes);
     await fastify.register(careerPathRoutes);
+    await fastify.register(topicRoutes);
 }

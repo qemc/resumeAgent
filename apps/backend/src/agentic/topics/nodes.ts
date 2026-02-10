@@ -3,7 +3,6 @@ import {
     getAiEnhancedExperience,
     getCareerPath,
     getExperience,
-    updateAiEnhanceLastUpdate
 } from '../utils';
 import {
     unifyPromptEn,
@@ -109,8 +108,6 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
             console.dir(`Enhance check executed succesfully - True: ${result.checkResult}`, { depth: null })
         } else {
             console.dir(`Enhance check executed succesfully - False: ${result.checkResult}`, { depth: null })
-
-            await updateAiEnhanceLastUpdate(expId)
         }
     }
 

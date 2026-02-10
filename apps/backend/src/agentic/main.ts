@@ -50,7 +50,7 @@ console.dir(topicsTest, { depth: null })
 
 
 // To do:
-// Finish endpoints for topics
-// Move structured output descriptions of single topic to the prompt file
-// Add previous topic to the prompt. 
 // Generate frontend according to the backend.
+// identify what is wrong with updating ai enhance, after saving an experience
+// Figure out how generation tracker was implemented by AI
+// Clean all code on on frontend with AI

@@ -116,7 +116,22 @@ export const original_id_pl = `Oryginalne ID pobrane z danych wejściowych. Nie 
 
 export const checkEnhanceAccuracyPromptEn = defaultPrompt(
     `
-    You are advanced job experience analyst. Your task is to assess if the current AI enhanced experience description requires update according to the description that is provided by the user. You are performing a check, if there is a need to use more advanced AI Agent to fix potential gaps created by the user update. Be very strict and only if the gap is significant, please return true, if the update was not significant and does not require advanced AI agent update, return false.
+    You are an advanced job experience analyst. Your task is to compare the current AI-enhanced experience description against the latest user-provided description and decide if the AI enhancement needs to be regenerated.
+
+    ### DECISION RULES (default to true):
+    Return **false** ONLY if ALL of the following are true:
+    - The user's changes are purely cosmetic (typos, punctuation, minor rephrasing)
+    - No new responsibilities, projects, tools, or achievements were added
+    - No existing work streams were removed or substantially reworded
+    - The overall scope and meaning of the experience is unchanged
+
+    Return **true** if ANY of the following apply:
+    - New tasks, tools, technologies, or responsibilities were mentioned
+    - Existing descriptions were significantly reworded (beyond cosmetic fixes)
+    - Any work stream was added, removed, or restructured
+    - The user's description contains information not reflected in the enhanced version
+
+    When in doubt, return true — it is better to re-enhance than to serve stale data.
     `,
     `
     Current Enhanced Experience: {enhanced}
@@ -126,24 +141,32 @@ export const checkEnhanceAccuracyPromptEn = defaultPrompt(
 
 export const checkEnhanceAccuracyPromptPl = defaultPrompt(
     `
-    Jesteś zaawansowanym analitykiem opisów stanowisk. Twoim zadaniem jest ocena, czy obecna, ulepszona przez AI wersja doświadczenia wymaga ponownego przetworzenia w oparciu o nowy opis dostarczony przez użytkownika. 
-    
-    Wykonujesz weryfikację, czy konieczne jest uruchomienie "Zaawansowanego Agenta AI" w celu naprawienia potencjalnych luk merytorycznych wynikających z edycji użytkownika. 
-    
-    Bądź bardzo surowy (strict). 
-    - Zwróć 'true' TYLKO wtedy, gdy luka lub zmiana jest ZNACZĄCA (istotna merytorycznie, zmieniająca kontekst lub dodająca nowe, nieprzetworzone fakty). 
-    - Jeśli aktualizacja jest kosmetyczna (np. literówki, drobne zmiany stylistyczne) i nie wymaga interwencji zaawansowanego AI, zwróć 'false'.
-    `,
+    Jesteś zaawansowanym analitykiem opisów stanowisk. Twoim zadaniem jest porównanie aktualnej wersji ulepszonej przez AI z najnowszym opisem dostarczonym przez użytkownika i podjęcie decyzji, czy ulepszenie AI wymaga ponownego wygenerowania.
 
+    ### ZASADY DECYZJI (domyślnie true):
+    Zwróć **false** TYLKO wtedy, gdy WSZYSTKIE poniższe warunki są spełnione:
+    - Zmiany użytkownika są czysto kosmetyczne (literówki, interpunkcja, drobne przeformułowania)
+    - Nie dodano nowych obowiązków, projektów, narzędzi ani osiągnięć
+    - Nie usunięto ani istotnie nie przeformułowano istniejących strumieni pracy
+    - Ogólny zakres i znaczenie doświadczenia pozostały niezmienione
+
+    Zwróć **true** jeśli KTÓRYKOLWIEK z poniższych warunków jest spełniony:
+    - Wspomniano nowe zadania, narzędzia, technologie lub obowiązki
+    - Istniejące opisy zostały istotnie przeformułowane (poza poprawkami kosmetycznymi)
+    - Jakikolwiek strumień pracy został dodany, usunięty lub zrestrukturyzowany
+    - Opis użytkownika zawiera informacje nieodzwierciedlone w ulepszonej wersji
+
+    W razie wątpliwości zwróć true — lepiej ponownie ulepszyć niż serwować nieaktualne dane.
+    `,
     `
     Obecne Ulepszone Doświadczenie (Current Enhanced Experience): {enhanced}
     Aktualizacja Użytkownika (User Update): {user}
     `
 )
 
-export const check_update_en = 'The result of the check, true if there is a need for AI Enhance rerun, false if the urrent AI enhancement is sufficient and user update was small'
+export const check_update_en = 'true if the AI enhancement should be regenerated (any meaningful change detected), false only for purely cosmetic edits (typos, punctuation)'
 
-export const check_update_pl = 'Wynik Twojej oceny, true jeśli jest potrzeba ulepszenia obecnego opisu AI, false, jeśli aktualny AI opis jest wystarczający i zmiany uzytkownika były nieznaczne.'
+export const check_update_pl = 'true jeśli ulepszenie AI powinno zostać ponownie wygenerowane (wykryto jakąkolwiek merytoryczną zmianę), false tylko dla czysto kosmetycznych edycji (literówki, interpunkcja)'
 
 export const single_topic_reason_en = `Step-by-step reasoning. Identify the specific skills in the raw input that match the target persona. Explicitly state which 'hyperbolic' words you will avoid.`
 

@@ -1,13 +1,29 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate, useMatch } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/Button';
+import { getCareerPath } from '@/services/careerPaths';
 
 export default function Navbar() {
     const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [breadcrumbName, setBreadcrumbName] = useState<string | null>(null);
+
+    // Detect if we're on a career path detail page
+    const detailMatch = useMatch('/career-paths/:id');
+    const isDetailPage = !!detailMatch;
+
+    useEffect(() => {
+        if (detailMatch?.params.id) {
+            getCareerPath(Number(detailMatch.params.id))
+                .then(cp => setBreadcrumbName(cp.name))
+                .catch(() => setBreadcrumbName(null));
+        } else {
+            setBreadcrumbName(null);
+        }
+    }, [detailMatch?.params.id]);
 
     const handleLogout = async () => {
         await logout();
@@ -35,14 +51,22 @@ export default function Navbar() {
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${location.pathname === item.path
-                                        ? 'bg-primary/10 text-primary'
-                                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${location.pathname === item.path || (item.path === '/career-paths' && isDetailPage)
+                                            ? 'bg-primary/10 text-primary'
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                                         }`}
                                 >
                                     {item.label}
                                 </Link>
                             ))}
+                            {isDetailPage && breadcrumbName && (
+                                <>
+                                    <span className="text-muted-foreground text-sm">/</span>
+                                    <span className="px-3 py-2 text-sm font-medium text-foreground truncate max-w-[200px]">
+                                        {breadcrumbName}
+                                    </span>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -102,9 +126,9 @@ export default function Navbar() {
                                 key={item.path}
                                 to={item.path}
                                 onClick={() => setMobileMenuOpen(false)}
-                                className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${location.pathname === item.path
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                                className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${location.pathname === item.path || (item.path === '/career-paths' && isDetailPage)
+                                        ? 'bg-primary/10 text-primary'
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                                     }`}
                             >
                                 {item.label}
