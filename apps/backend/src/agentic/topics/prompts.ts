@@ -13,6 +13,7 @@ export const singleTopicPromptEn = defaultPrompt(
     3. **Tone:** Professional, active voice, result-oriented.
     4. **Vocabulary:** Use the terminology of the TARGET industry.
     5. If user hint is provided in the input, take this under consideration.
+    6. Do not generate the same text as in 'Previous item' section.
     `,
 
     // user prompt
@@ -23,6 +24,7 @@ export const singleTopicPromptEn = defaultPrompt(
     Career path name: {careerPathName}
     Career path description: {careerPathDescription}
     {userHint}
+    {previousItem}
     `
 )
 
@@ -38,6 +40,7 @@ export const singleTopicPromptPl = defaultPrompt(
     3. **Ton:** Profesjonalny, strona czynna, zorientowany na wyniki (result-oriented).
     4. **Słownictwo:** Używaj terminologii właściwej dla branży DOCELOWEJ.
     5. Jeśli w danych wejściowych znajduje się wskazówka od użytkownika (user hint), weź ją pod uwagę.
+    6. Nie generuj takiego samego tekstu jak w sekcji 'Wcześniej wygenerowany temat'
     `,
 
     // user prompt
@@ -48,6 +51,7 @@ export const singleTopicPromptPl = defaultPrompt(
     Nazwa ścieżki kariery: {careerPathName}
     Opis ścieżki kariery: {careerPathDescription}
     {userHint}
+    {previousItem}
     `
 )
 
@@ -140,3 +144,12 @@ export const checkEnhanceAccuracyPromptPl = defaultPrompt(
 export const check_update_en = 'The result of the check, true if there is a need for AI Enhance rerun, false if the urrent AI enhancement is sufficient and user update was small'
 
 export const check_update_pl = 'Wynik Twojej oceny, true jeśli jest potrzeba ulepszenia obecnego opisu AI, false, jeśli aktualny AI opis jest wystarczający i zmiany uzytkownika były nieznaczne.'
+
+export const single_topic_reason_en = `Step-by-step reasoning. Identify the specific skills in the raw input that match the target persona. Explicitly state which 'hyperbolic' words you will avoid.`
+
+export const single_topic_reason_pl = `Rozumowanie krok po kroku. Zidentyfikuj w tekście źródłowym konkretne umiejętności, które pasują do docelowej persony. Wyraźnie określ, których „hiperbolicznych” słów zamierzasz unikać.`
+
+export const bullet_point_en = `The final, polished, and grounded bullet point (1-2 sentences max).`
+export const bullet_point_pl = `Ostateczny, dopracowany i rzeczowy punkt listy (maksymalnie 1-2 zdania).`
+
+

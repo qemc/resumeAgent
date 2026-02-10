@@ -51,4 +51,6 @@ console.dir(topicsTest, { depth: null })
 
 // To do:
 // Finish endpoints for topics
-// Figure out potential improvement in code structure
+// Move structured output descriptions of single topic to the prompt file
+// Add previous topic to the prompt. 
+// Generate frontend according to the backend.

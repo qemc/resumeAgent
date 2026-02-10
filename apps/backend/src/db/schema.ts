@@ -29,6 +29,9 @@ import { uniqueIndex } from 'drizzle-orm/sqlite-core'
 export type ExperienceDb = InferSelectModel<typeof experiences>;
 export type AiEnhancedExperienceDb = InferSelectModel<typeof ai_enhanced_experience>;
 export type CareerPathsDb = InferSelectModel<typeof careerPaths>;
+export type TopicDb = InferSelectModel<typeof topics>;
+export type TopicDbInsert = Omit<TopicDb, 'id' | 'createdAt'>
+
 
 
 export const users = sqliteTable('users', {

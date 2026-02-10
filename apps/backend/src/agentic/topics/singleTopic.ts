@@ -3,31 +3,46 @@ import type {
     WriterRedefinedTopic,
     Topic,
 } from "../../types/agent";
-import z from "zod";
+import z, { length } from "zod";
 import { oai5_1, oai5nano } from "../models";
 import {
     singleTopicPromptEn,
     singleTopicPromptPl,
+    single_topic_reason_en,
+    single_topic_reason_pl,
+    bullet_point_en,
+    bullet_point_pl
 } from "./prompts";
 import type { resumeLanguage } from "@resume-builder/shared";
 
 
 
-export async function generateSingleTopic(careerPath: CareerPath, writerRedefinedTopic: WriterRedefinedTopic, lang: resumeLanguage, userComment: string = '') {
+export async function generateSingleTopic(careerPath: CareerPath, writerRedefinedTopic: WriterRedefinedTopic, lang: resumeLanguage, userComment: string = '', previousItem: string = '') {
 
-    let outputDsc_strategy_and_reasoning = `Step-by-step reasoning. Identify the specific skills in the raw input that match the target persona. Explicitly state which 'hyperbolic' words you will avoid.`
-
-    let outputDsc_final_bullet_point = `The final, polished, and grounded bullet point (1-2 sentences max).`
-
+    let outputDsc_strategy_and_reasoning = single_topic_reason_en
+    let outputDsc_final_bullet_point = bullet_point_en
     let singleTopicPrompt = singleTopicPromptEn
 
+    let userCommentAdjusted = userComment
+    let previousItemAdjusted = previousItem
+
+    if (userComment.length > 0) {
+        userCommentAdjusted = `User hint:\n${userComment}`
+    }
+    if (previousItem.length > 0) {
+        previousItemAdjusted = `Previous item:\n${previousItem}`
+    }
     if (lang !== 'EN') {
-
-        outputDsc_strategy_and_reasoning = `Rozumowanie krok po kroku. Zidentyfikuj w tekście źródłowym konkretne umiejętności, które pasują do docelowej persony. Wyraźnie określ, których „hiperbolicznych” słów zamierzasz unikać.`
-
-        outputDsc_final_bullet_point = `Ostateczny, dopracowany i rzeczowy punkt listy (maksymalnie 1-2 zdania).`
-
+        outputDsc_strategy_and_reasoning = single_topic_reason_pl
+        outputDsc_final_bullet_point = bullet_point_pl
         singleTopicPrompt = singleTopicPromptPl
+
+        if (userComment.length > 0) {
+            userCommentAdjusted = `Wskazówka uzytkownika:\n${userComment}`
+        }
+        if (previousItem.length > 0) {
+            previousItemAdjusted = `Wcześniej wygenerowany temat:\n${previousItem}`
+        }
     }
 
     const singleTopicStructuredOutput = z.object({
@@ -39,11 +54,7 @@ export async function generateSingleTopic(careerPath: CareerPath, writerRedefine
     // to be changed
     const oai5_1_so_topicCOT = oai5nano.withStructuredOutput(singleTopicStructuredOutput)
 
-    let userCommentAdjusted = userComment
 
-    if (userComment.length > 0) {
-        userCommentAdjusted = `User hint:\n${userComment}`
-    }
 
     const chain = singleTopicPrompt.pipe(oai5_1_so_topicCOT)
     const result = await chain.invoke({
@@ -51,7 +62,8 @@ export async function generateSingleTopic(careerPath: CareerPath, writerRedefine
         topicDescription: writerRedefinedTopic.refinedQuotes.join('\n'),
         careerPathName: careerPath.name,
         careerPathDescription: careerPath.description,
-        userHint: userCommentAdjusted
+        userHint: userCommentAdjusted,
+        previousItem: previousItemAdjusted
     })
 
     const finalTopic: Topic = {
