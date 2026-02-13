@@ -3,6 +3,7 @@ import {
     getAiEnhancedExperience,
     getCareerPath,
     getExperience,
+    updateAiEnhanceLastUpdate
 } from '../utils';
 import {
     unifyPromptEn,
@@ -29,7 +30,7 @@ import z from 'zod';
 import { AppError, ERRORS } from '../../../utils/errors';
 import type { CareerPath, Topic } from '../../types/agent';
 
-const unify_model = oai5nano // To be changed
+const unify_model = oai5nano
 const check_update_model = oai5nano // Remains the cheapest one
 
 export async function checkAiEnhancedExperience(state: typeof State.State) {
@@ -47,7 +48,7 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
     } as CareerPath
 
 
-    // Expirience description handling
+    // Experience description handling
     const expId = state.expId
 
     const existingEnhance = await getAiEnhancedExperience(expId)
@@ -64,8 +65,6 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
     const lastUpdateEnhance = existingEnhance?.updatedAt
     const lastUpdateExp = exisitingExp?.updatedAt
 
-    console.dir(`Last update enhance timestamp: ${lastUpdateEnhance}`, { depth: null })
-    console.dir(`Last update exp timestamp: ${lastUpdateExp}`, { depth: null })
 
 
     if (redefinedTopics && existingEnhance && (lastUpdateEnhance < lastUpdateExp)) {
@@ -105,9 +104,16 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
                 expId: expId,
             })).writerRedefinedTopics
 
-            console.dir(`Enhance check executed succesfully - True: ${result.checkResult}`, { depth: null })
+            console.dir(`Enhance check executed successfully - True: ${result.checkResult}`, { depth: null })
+
         } else {
-            console.dir(`Enhance check executed succesfully - False: ${result.checkResult}`, { depth: null })
+            console.dir(`Enhance check executed successfully - False: ${result.checkResult}`, { depth: null })
+            // updating last check date
+            try {
+                await updateAiEnhanceLastUpdate(expId)
+            } catch (error) {
+                throw new AppError(ERRORS.AI_ERROR)
+            }
         }
     }
 

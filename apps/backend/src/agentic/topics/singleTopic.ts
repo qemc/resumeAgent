@@ -3,8 +3,8 @@ import type {
     WriterRedefinedTopic,
     Topic,
 } from "../../types/agent";
-import z, { length } from "zod";
-import { oai5_1, oai5nano } from "../models";
+import z from "zod";
+import { oai5nano } from "../models";
 import {
     singleTopicPromptEn,
     singleTopicPromptPl,
@@ -51,12 +51,11 @@ export async function generateSingleTopic(careerPath: CareerPath, writerRedefine
         final_bullet_point: z.string().describe(outputDsc_final_bullet_point)
     })
 
-    // to be changed
-    const oai5_1_so_topicCOT = oai5nano.withStructuredOutput(singleTopicStructuredOutput)
+    const topicModel = oai5nano.withStructuredOutput(singleTopicStructuredOutput)
 
 
 
-    const chain = singleTopicPrompt.pipe(oai5_1_so_topicCOT)
+    const chain = singleTopicPrompt.pipe(topicModel)
     const result = await chain.invoke({
         topicName: writerRedefinedTopic.redefinedTopic,
         topicDescription: writerRedefinedTopic.refinedQuotes.join('\n'),

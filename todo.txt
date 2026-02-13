@@ -1,5 +1,0 @@
-1. Axios implementation 
-2. Implement req and reply interceptors
-3. Understand request queue and implement it as well
-
-

@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resume Builder
 
-## Getting Started
+AI-powered resume builder with multi-language support (EN/PL) and AI-generated topic descriptions.
 
-First, run the development server:
+## Architecture
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+resume-builder/
+├── apps/
+│   ├── backend/     # Fastify API + AI agents (LangGraph)
+│   └── frontend/    # Vite + React SPA
+└── packages/
+    └── shared/      # Shared TypeScript types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Backend:** Fastify, Drizzle ORM (SQLite), LangChain/LangGraph (OpenAI), JWT auth  
+**Frontend:** Vite, React, Axios with JWT refresh interceptor
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Install all dependencies
+npm install
 
-## Learn More
+# Set up environment variables
+# Backend: apps/backend/.env
+#   JWT_SECRET_KEY=<secret>
+#   COOKIE_SECRET_KEY=<secret>
+#   OPENAI_API_KEY=<key>
+#   ENABLE_REGISTRATION=true|false
+#   NODE_ENV=development|production
+#
+# Frontend: apps/frontend/.env
+#   VITE_API_URL=http://localhost:3000
+#   VITE_ENABLE_REGISTRATION=true|false
 
-To learn more about Next.js, take a look at the following resources:
+# Run database migrations
+npx drizzle-kit push
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start development servers
+npm run dev:backend    # → http://localhost:3000
+npm run dev:frontend   # → http://localhost:5173
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | Description |
+|---------|-------------|
+| `npm run dev:backend` | Start backend dev server |
+| `npm run dev:frontend` | Start frontend dev server |
+| `npm run build` | Build both apps |
+| `npm run lint` | Lint all workspaces |

@@ -1,10 +1,5 @@
 import { State } from "./state";
-import {
-    oai5_1,
-    oai5mini,
-    oai4omini,
-    oai5nano
-} from "../models";
+import { oai5nano } from "../models";
 import {
     architectOutput,
     writerRedefinedTopicSchema
@@ -19,15 +14,8 @@ import {
     upsertAiEnhancedExperience,
     getExperience
 } from "../utils";
-import { stat } from "fs";
 import type { resumeLanguage } from "@resume-builder/shared";
 import type { WriterRedefinedTopic } from "../../types/agent";
-
-const oai5_1_so_architect = oai5_1.withStructuredOutput(architectOutput)
-const oai5_1_so_writer = oai5_1.withStructuredOutput(writerRedefinedTopicSchema)
-
-const oai5mini_so_writer = oai5mini.withStructuredOutput(writerRedefinedTopicSchema)
-const oai4omini_so_writer = oai4omini.withStructuredOutput(writerRedefinedTopicSchema)
 
 const oai5nano_so_architect = oai5nano.withStructuredOutput(architectOutput)
 const oai5nano_so_writer = oai5nano.withStructuredOutput(writerRedefinedTopicSchema)
@@ -52,13 +40,12 @@ export async function architect(state: typeof State.State) {
     const userSum = state.userSummary
     const resultChain = architectPrompt.pipe(oai5nano_so_architect)
 
-    const resutl = await resultChain.invoke({
+    const result = await resultChain.invoke({
         raw_text: userSum
     })
 
-    console.dir(resutl, { depth: null, colors: true });
     return {
-        workstreams: resutl.workstreams
+        workstreams: result.workstreams
     }
 }
 
@@ -106,7 +93,7 @@ export async function saver(state: typeof State.State) {
     } catch (error) {
         return {
             operationStatus: 'failed',
-            error: error instanceof Error ? error.message : 'Unknown error orccuerd'
+            error: error instanceof Error ? error.message : 'Unknown error occurred'
         }
     }
 }
