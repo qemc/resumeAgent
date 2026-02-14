@@ -4,7 +4,7 @@ import type {
     Topic,
 } from "../../types/agent";
 import z from "zod";
-import { oai5nano } from "../models";
+import { oai4omini, oai5_1, oai5nano } from "../models";
 import {
     singleTopicPromptEn,
     singleTopicPromptPl,
@@ -51,7 +51,7 @@ export async function generateSingleTopic(careerPath: CareerPath, writerRedefine
         final_bullet_point: z.string().describe(outputDsc_final_bullet_point)
     })
 
-    const topicModel = oai5nano.withStructuredOutput(singleTopicStructuredOutput)
+    const topicModel = oai5_1.withStructuredOutput(singleTopicStructuredOutput)
 
 
 

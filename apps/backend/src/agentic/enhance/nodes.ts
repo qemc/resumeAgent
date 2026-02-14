@@ -1,5 +1,5 @@
 import { State } from "./state";
-import { oai5nano } from "../models";
+import { oai4omini, oai5_1, oai5mini, oai5nano } from "../models";
 import {
     architectOutput,
     writerRedefinedTopicSchema
@@ -17,8 +17,8 @@ import {
 import type { resumeLanguage } from "@resume-builder/shared";
 import type { WriterRedefinedTopic } from "../../types/agent";
 
-const oai5nano_so_architect = oai5nano.withStructuredOutput(architectOutput)
-const oai5nano_so_writer = oai5nano.withStructuredOutput(writerRedefinedTopicSchema)
+const model_so_architect = oai5mini.withStructuredOutput(architectOutput)
+const model_so_writer = oai5_1.withStructuredOutput(writerRedefinedTopicSchema)
 
 export async function fill(state: typeof State.State) {
 
@@ -38,7 +38,7 @@ export async function architect(state: typeof State.State) {
     if (state.resumeLang !== 'EN') architectPrompt = architectPromptPl
 
     const userSum = state.userSummary
-    const resultChain = architectPrompt.pipe(oai5nano_so_architect)
+    const resultChain = architectPrompt.pipe(model_so_architect)
 
     const result = await resultChain.invoke({
         raw_text: userSum
@@ -59,7 +59,7 @@ export async function writer(state: typeof State.State) {
 
     const resultsToBe = workstreams.map(async (workstream) => {
 
-        const chain = processSingleWorkstreamPrompt.pipe(oai5nano_so_writer)
+        const chain = processSingleWorkstreamPrompt.pipe(model_so_writer)
 
         const topic = workstream.topicName
         const rawQuotes = workstream.rawQuotes.map((quote) => {
