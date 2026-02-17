@@ -1,32 +1,15 @@
 {
-    "name": "resume-builder-monorepo",
+    "name": "resume-builder",
     "version": "1.0.0",
     "private": true,
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
     "scripts": {
-        "dev:frontend": "npm run dev -w @resume-builder/frontend",
-        "dev:backend": "npm run dev -w @resume-builder/backend",
-        "build:frontend": "npm run build -w @resume-builder/frontend",
-        "build:backend": "npm run build -w @resume-builder/backend",
-        "build": "npm run build:backend && npm run build:frontend",
-        "lint": "npm run lint --workspaces --if-present",
-        "run": "cd apps/backend && tsx src/agentic/main.ts"
+        "dev:frontend": "cd apps/frontend && npm run dev",
+        "dev:backend": "cd apps/backend && npm run dev",
+        "build:frontend": "cd apps/frontend && npm run build",
+        "build:backend": "cd apps/backend && npm run build",
+        "build": "npm run build:backend && npm run build:frontend"
     },
     "engines": {
         "node": ">=20"
-    },
-    "dependencies": {
-        "bcrypt": "^6.0.0",
-        "better-sqlite3": "^12.6.2",
-        "dotenv": "^17.2.3",
-        "drizzle-orm": "^0.45.1"
-    },
-    "devDependencies": {
-        "@types/bcrypt": "^6.0.0",
-        "@types/better-sqlite3": "^7.6.13",
-        "drizzle-kit": "^0.31.8"
     }
 }

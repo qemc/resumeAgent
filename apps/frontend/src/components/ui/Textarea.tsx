@@ -3,10 +3,6 @@
 import { forwardRef, type TextareaHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
-/**
- * Props for the Textarea component.
- * Extends native textarea attributes with custom props.
- */
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     /** Label text displayed above the textarea */
     label?: string;
@@ -20,24 +16,6 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
     showCount?: boolean;
 }
 
-/**
- * Reusable Textarea component with consistent styling.
- * 
- * Features:
- * - Built-in label support
- * - Optional character counter
- * - Error state styling
- * - Auto-resize ready (via CSS)
- * 
- * @example
- * <Textarea
- *   label="Description"
- *   placeholder="Describe your experience..."
- *   rows={4}
- *   showCount
- *   maxLength={5000}
- * />
- */
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     (
         {
@@ -89,18 +67,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
                     maxLength={maxLength}
                     value={value}
                     className={cn(
-                        // Base styles
                         'flex w-full rounded-lg border bg-background px-4 py-3',
                         'text-sm text-foreground placeholder:text-muted-foreground',
-                        // Focus styles
                         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
-                        // Transition
                         'transition-all duration-200',
-                        // Resize
                         'resize-y min-h-[80px]',
-                        // Disabled state
                         'disabled:cursor-not-allowed disabled:opacity-50',
-                        // Error state
                         error
                             ? 'border-destructive focus:ring-destructive'
                             : 'border-input hover:border-muted-foreground/50',

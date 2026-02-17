@@ -14,7 +14,7 @@ import {
     upsertAiEnhancedExperience,
     getExperience
 } from "../utils";
-import type { resumeLanguage } from "@resume-builder/shared";
+import type { resumeLanguage } from "../../types/resume";
 import type { WriterRedefinedTopic } from "../../types/agent";
 
 const model_so_architect = oai5mini.withStructuredOutput(architectOutput)

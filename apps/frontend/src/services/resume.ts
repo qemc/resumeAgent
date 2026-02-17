@@ -14,9 +14,6 @@ import type {
     ProjectRow,
 } from '@/types';
 
-// =============================================================================
-// Resume (contact, skills, languages, interests)
-// =============================================================================
 
 export const getResume = async (lang: ResumeLang): Promise<ResumeResponse | null> => {
     try {
@@ -65,9 +62,6 @@ export const updateSummary = async (lang: ResumeLang, summary: string): Promise<
     return response.data;
 };
 
-// =============================================================================
-// Experiences
-// =============================================================================
 
 export const getExperiences = async (lang: ResumeLang): Promise<ExperienceRow[]> => {
     const response = await api.get<ExperienceRow[]>(`/experiences/${lang}`);
@@ -98,9 +92,6 @@ export const deleteExperience = async (id: number): Promise<void> => {
     await api.delete(`/experiences/${id}`);
 };
 
-// =============================================================================
-// Certificates
-// =============================================================================
 
 export const getCertificates = async (lang: ResumeLang): Promise<CertificateRow[]> => {
     const response = await api.get<CertificateRow[]>(`/certificates/${lang}`);
@@ -131,9 +122,6 @@ export const deleteCertificate = async (id: number): Promise<void> => {
     await api.delete(`/certificates/${id}`);
 };
 
-// =============================================================================
-// Projects
-// =============================================================================
 
 export const getProjects = async (lang: ResumeLang): Promise<ProjectRow[]> => {
     const response = await api.get<ProjectRow[]>(`/projects/${lang}`);

@@ -3,18 +3,12 @@
 import { forwardRef, type SelectHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
-/**
- * Option type for Select component.
- */
 export interface SelectOption {
     value: string;
     label: string;
     disabled?: boolean;
 }
 
-/**
- * Props for the Select component.
- */
 export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
     /** Label text displayed above the select */
     label?: string;
@@ -28,26 +22,6 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
     wrapperClassName?: string;
 }
 
-/**
- * Reusable Select component with consistent styling.
- * 
- * Features:
- * - Built-in label support
- * - Error state styling
- * - Placeholder option support
- * - Full accessibility
- * 
- * @example
- * <Select
- *   label="Skill Level"
- *   options={[
- *     { value: 'beginner', label: 'Beginner' },
- *     { value: 'intermediate', label: 'Intermediate' },
- *   ]}
- *   value={level}
- *   onChange={handleChange}
- * />
- */
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     (
         {
@@ -81,21 +55,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     ref={ref}
                     required={required}
                     className={cn(
-                        // Base styles
                         'flex h-10 w-full rounded-lg border bg-background px-4 py-2',
                         'text-sm text-foreground',
-                        // Focus styles
                         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
-                        // Transition
                         'transition-all duration-200',
-                        // Disabled state
                         'disabled:cursor-not-allowed disabled:opacity-50',
-                        // Appearance
                         'appearance-none cursor-pointer',
-                        // Custom dropdown arrow
                         'bg-no-repeat bg-right',
                         'pr-10',
-                        // Error state
                         error
                             ? 'border-destructive focus:ring-destructive'
                             : 'border-input hover:border-muted-foreground/50',

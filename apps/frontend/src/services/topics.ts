@@ -1,9 +1,6 @@
 import { api } from './api';
 import type { ResumeLang, TopicRow } from '@/types';
 
-// =============================================================================
-// Topics
-// =============================================================================
 
 export const getTopics = async (
     careerPathId: number,

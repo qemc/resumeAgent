@@ -6,7 +6,7 @@ import {
 } from './utils';
 import { topicsAgent } from './topics/topics';
 import { enhanceAgent } from './enhance/enhance';
-import type { resumeLanguage } from '@resume-builder/shared';
+import type { resumeLanguage } from '../types/resume';
 import { generateSingleTopic } from './topics/singleTopic';
 import type { WriterRedefinedTopic } from '../types/agent';
 
@@ -18,6 +18,3 @@ export async function invokeEnhanceAgent() {
     })
     return result
 }
-
-const result = await invokeEnhanceAgent()
-console.dir(result, { depth: null, colors: true });

@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1769255782185,
-      "tag": "0000_sturdy_yellow_claw",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1769459799764,
-      "tag": "0001_black_speed",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1769460201682,
-      "tag": "0002_cloudy_tiger_shark",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1769460276544,
-      "tag": "0003_famous_white_queen",
+      "when": 1771365997838,
+      "tag": "0000_striped_leader",
       "breakpoints": true
     }
   ]

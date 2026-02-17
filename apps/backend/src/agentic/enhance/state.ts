@@ -1,6 +1,6 @@
 import { Annotation } from "@langchain/langgraph";
 import z from "zod";
-import type { resumeLanguage } from "@resume-builder/shared";
+import type { resumeLanguage } from "../../types/resume";
 import type { AgentStatus } from "../../types/agent";
 import type {
     WriterRedefinedTopic,

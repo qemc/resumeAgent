@@ -12,7 +12,7 @@ import {
     type ExperienceInput,
     type CertificateInput,
     type ProjectInput
-} from "@resume-builder/shared";
+} from "../types/resume";
 
 import type {
     InferSelectModel
@@ -67,7 +67,7 @@ export const experiences = sqliteTable('experiences', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    resume_lang: text('resume_lang').notNull(),
     experience: text('experience', { mode: 'json' })
         .$type<ExperienceInput>()
         .notNull(),
@@ -83,7 +83,7 @@ export const ai_enhanced_experience = sqliteTable('ai_enhanced_experience', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    resume_lang: text('resume_lang').notNull(),
     experience: text('experience', { mode: 'json' })
         .$type<WriterRedefinedTopic[]>()
         .notNull(),
@@ -100,7 +100,7 @@ export const certificates = sqliteTable('certificates', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    resume_lang: text('resume_lang').notNull(),
     certificate: text('certificate', { mode: 'json' })
         .$type<CertificateInput>()
         .notNull()
@@ -111,7 +111,7 @@ export const projects = sqliteTable('projects', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    resume_lang: text('resume_lang').notNull(),
     project: text('project', { mode: 'json' })
         .$type<ProjectInput>()
         .notNull()
@@ -122,7 +122,7 @@ export const careerPaths = sqliteTable('career_paths', {
     user_id: integer('user_id')
         .references(() => users.id, { onDelete: 'cascade' })
         .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    resume_lang: text('resume_lang').notNull(),
     name: text('name').notNull(),
     description: text('description').notNull(),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
@@ -140,7 +140,7 @@ export const topics = sqliteTable('topics', {
     experience_id: integer('experience_id')
         .references(() => experiences.id, { onDelete: 'cascade' })
         .notNull(),
-    resume_lang: text('resume_lang').notNull(), // 'EN' | 'PL'
+    resume_lang: text('resume_lang').notNull(),
     topic_text: text('topic', { mode: 'json' })
         .$type<Topic>(),
     createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),

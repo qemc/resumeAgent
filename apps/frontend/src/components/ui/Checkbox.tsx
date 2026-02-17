@@ -3,24 +3,11 @@
 import { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
-/**
- * Props for the Checkbox component.
- */
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
     /** Label text displayed next to the checkbox */
     label?: string;
 }
 
-/**
- * Reusable Checkbox component with label.
- * 
- * @example
- * <Checkbox
- *   label="Currently working here"
- *   checked={isCurrentlyWorking}
- *   onChange={handleChange}
- * />
- */
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     ({ className, label, id, ...props }, ref) => {
         const checkboxId = id || `checkbox-${label?.toLowerCase().replace(/\s+/g, '-')}`;

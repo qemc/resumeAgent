@@ -5,9 +5,6 @@ import { db } from "../db";
 import { experiences, certificates, projects, resumes } from "../db/schema";
 import { AppError, ERRORS } from "../../utils/errors";
 
-// =============================================================================
-// Zod Schemas for Validation
-// =============================================================================
 
 const experienceSchema = z.object({
     company: z.string(),
@@ -49,7 +46,7 @@ const langQuerySchema = z.object({
     lang: z.enum(['EN', 'PL']).optional(),
 });
 
-// Resume schemas
+
 const contactSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -88,15 +85,9 @@ const resumeSchema = z.object({
     summary: z.string().optional(),
 });
 
-// =============================================================================
-// Routes
-// =============================================================================
 
 export async function resumeRoutes(app: FastifyInstance) {
 
-    // =========================================================================
-    // EXPERIENCES
-    // =========================================================================
 
     app.get('/experiences/:lang', { onRequest: [app.auth] }, async (req) => {
         const { lang } = langParamSchema.parse(req.params);
@@ -132,7 +123,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         });
         if (!existing) throw new AppError(ERRORS.NOT_FOUND);
 
-        // Extract the descriptionChanged flag before validation
         const body = req.body as Record<string, unknown>;
         const descriptionChanged = body._descriptionChanged !== false;
         delete body._descriptionChanged;
@@ -140,7 +130,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         const parse = experienceSchema.partial().safeParse(body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        // Only update timestamp if description changed
         if (descriptionChanged) {
             const now = new Date();
             const updated = { ...existing.experience, ...parse.data, updatedAt: now };
@@ -166,9 +155,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(204).send();
     });
 
-    // =========================================================================
-    // CERTIFICATES
-    // =========================================================================
 
     app.get('/certificates/:lang', { onRequest: [app.auth] }, async (req) => {
         const { lang } = langParamSchema.parse(req.params);
@@ -204,7 +190,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         });
         if (!existing) throw new AppError(ERRORS.NOT_FOUND);
 
-        // Extract the descriptionChanged flag before validation
         const body = req.body as Record<string, unknown>;
         const descriptionChanged = body._descriptionChanged !== false;
         delete body._descriptionChanged;
@@ -212,7 +197,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         const parse = certificateSchema.partial().safeParse(body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        // Only update timestamp if description/name changed
         const updated = descriptionChanged
             ? { ...existing.certificate, ...parse.data, updatedAt: new Date() }
             : { ...existing.certificate, ...parse.data };
@@ -233,9 +217,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(204).send();
     });
 
-    // =========================================================================
-    // PROJECTS
-    // =========================================================================
 
     app.get('/projects/:lang', { onRequest: [app.auth] }, async (req) => {
         const { lang } = langParamSchema.parse(req.params);
@@ -270,7 +251,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         });
         if (!existing) throw new AppError(ERRORS.NOT_FOUND);
 
-        // Extract the descriptionChanged flag before validation
         const body = req.body as Record<string, unknown>;
         const descriptionChanged = body._descriptionChanged !== false;
         delete body._descriptionChanged;
@@ -278,7 +258,6 @@ export async function resumeRoutes(app: FastifyInstance) {
         const parse = projectSchema.partial().safeParse(body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        // Only update timestamp if description changed
         const updated = descriptionChanged
             ? { ...existing.project, ...parse.data, updatedAt: new Date() }
             : { ...existing.project, ...parse.data };
@@ -299,11 +278,8 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(204).send();
     });
 
-    // =========================================================================
-    // RESUME (contact, skills, languages, interests)
-    // =========================================================================
 
-    // GET resume by language
+
     app.get('/resume/:lang', { onRequest: [app.auth] }, async (req) => {
         const { lang } = langParamSchema.parse(req.params);
         const resume = await db.query.resumes.findFirst({
@@ -314,12 +290,12 @@ export async function resumeRoutes(app: FastifyInstance) {
         return resume;
     });
 
-    // Create new resume (POST already has resume_lang in body)
+
     app.post('/resume', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = resumeSchema.safeParse(req.body);
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
-        // Check if resume already exists for this language
+
         const existing = await db.query.resumes.findFirst({
             where: and(eq(resumes.user_id, req.user.id), eq(resumes.resume_lang, parse.data.resume_lang))
         });
@@ -337,7 +313,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(201).send(inserted);
     });
 
-    // PATCH resume by language
+
     app.patch('/resume/:lang', { onRequest: [app.auth] }, async (req) => {
         const { lang } = langParamSchema.parse(req.params);
         const existing = await db.query.resumes.findFirst({
@@ -349,7 +325,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
 
         const updated = {
-            resume_lang: lang, // Keep the same language
+            resume_lang: lang,
             contact: parse.data.contact ?? existing.contact,
             skills: parse.data.skills ?? existing.skills,
             languages: parse.data.languages ?? existing.languages,
@@ -364,7 +340,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         return { id: existing.id, ...updated };
     });
 
-    // DELETE resume by language
+
     app.delete('/resume/:lang', { onRequest: [app.auth] }, async (req, reply) => {
         const { lang } = langParamSchema.parse(req.params);
         await db.delete(resumes)

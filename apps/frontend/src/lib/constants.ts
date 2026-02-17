@@ -1,12 +1,7 @@
-/**
- * Application constants.
- * Centralized configuration for easy maintenance.
- */
-
 import type { Contact, ResumeData } from '@/types';
 
-// Re-export SkillLevel from shared for consistency
-export type { SkillLevel } from '@resume-builder/shared';
+
+export type { SkillLevel } from '@/types';
 
 export const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
 
@@ -21,7 +16,7 @@ export const FORM_VALIDATION = {
     maxProjectDescriptionLength: 2000,
 } as const;
 
-// Default empty values
+
 export const emptyContact: Contact = {
     firstName: '', lastName: '', email: '', phone: '',
     linkedin: '', github: '', website: '', location: ''

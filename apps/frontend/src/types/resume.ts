@@ -1,43 +1,95 @@
-/**
- * Frontend Types
- * 
- * Centralized type definitions for the frontend application.
- */
+export interface Contact {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    linkedin?: string;
+    github?: string;
+    website?: string;
+    location?: string;
+}
 
-import type {
-    Contact,
-    Skill,
-    Language,
-    Interest,
-    ExperienceInput,
-    CertificateInput,
-    ProjectInput,
-} from '@resume-builder/shared';
+export interface Experience {
+    id: string;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    current: boolean;
+    description: string;
+    highlights?: string[];
+}
 
-// Re-export shared types
-export type {
-    Contact,
-    Experience,
-    Skill,
-    SkillLevel,
-    Certificate,
-    Project,
-    Resume,
-    Interest,
-    Language,
-    LanguageLevel,
-    ApiResponse,
-    ExperienceInput,
-    CertificateInput,
-    ProjectInput,
-} from '@resume-builder/shared';
+export type ExperienceInput = Omit<Experience, 'id'>;
 
-export type { resumeLanguage as LanguageCode } from '@resume-builder/shared';
+export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
 
-// App-specific types
+export interface Skill {
+    id: string;
+    name: string;
+    level: SkillLevel;
+    category?: string;
+}
+
+export interface Certificate {
+    id: string;
+    name: string;
+    issuer: string;
+    date: string;
+    expiryDate?: string;
+    credentialId?: string;
+    url?: string;
+}
+
+export type CertificateInput = Omit<Certificate, 'id'>;
+
+export interface Project {
+    id: string;
+    name: string;
+    description: string;
+    technologies: string[];
+    startDate?: string;
+    endDate?: string;
+    url?: string;
+}
+
+export type ProjectInput = Omit<Project, 'id'>;
+
+export interface Interest {
+    id: string;
+    name: string;
+}
+
+export type LanguageLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'Native';
+
+export interface Language {
+    id: string;
+    level: LanguageLevel;
+    name: string;
+}
+
+export type resumeLanguage = 'EN' | 'PL';
+
+export interface Resume {
+    resumeLanguage: resumeLanguage;
+    id: string;
+    userId: string;
+    name: string;
+    contact: Contact;
+    summary?: string;
+    experiences: Experience[];
+    skills: Skill[];
+    certificates: Certificate[];
+    projects: Project[];
+    languages: Language[];
+    interests: Interest[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type LanguageCode = resumeLanguage;
 export type ResumeLang = 'EN' | 'PL';
 
-// API Response Types
 export interface ResumeResponse {
     id: number;
     user_id: number;
@@ -70,7 +122,6 @@ export interface ProjectRow {
     project: ProjectInput;
 }
 
-// State Management Types
 export interface ResumeData {
     resumeId: number | null;
     contact: Contact;
@@ -83,7 +134,6 @@ export interface ResumeData {
     projectRows: ProjectRow[];
 }
 
-// Career Path Types
 export interface CareerPath {
     id: number;
     user_id: number;
@@ -94,7 +144,6 @@ export interface CareerPath {
     updatedAt: string;
 }
 
-// Topic Types
 export interface TopicText {
     topic: string;
     preTopic: {
@@ -112,4 +161,3 @@ export interface TopicRow {
     topic_text: TopicText;
     createdAt: string;
 }
-

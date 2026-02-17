@@ -10,7 +10,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@resume-builder/shared": "*",
     "axios": "^1.13.2",
     "axios-auth-refresh": "^3.3.6",
     "clsx": "^2.1.1",

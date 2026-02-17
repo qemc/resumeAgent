@@ -8,7 +8,7 @@ import type {
     CareerPathsDb
 } from '../db/schema';
 import type { WriterRedefinedTopic } from "../types/agent";
-import type { resumeLanguage } from "@resume-builder/shared";
+import type { resumeLanguage } from "../types/resume";
 
 export async function getCareerPath(careerPathId: number): Promise<CareerPathsDb> {
 

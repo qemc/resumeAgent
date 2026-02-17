@@ -1,9 +1,11 @@
 import 'dotenv/config';
-import Fastify, { type FastifyRegister, type FastifyReply, type FastifyRequest } from 'fastify';
+import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
 import { fastifyCors } from '@fastify/cors';
 import { registerRoutes } from './routes/index';
 import fastifyJwt from '@fastify/jwt';
 import cookie from '@fastify/cookie';
+import { db } from './db';
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 
 
 const JWT_SECRET_KEY = process.env['JWT_SECRET_KEY'];
@@ -34,8 +36,9 @@ app.decorate('auth', async function (request: FastifyRequest, reply: FastifyRepl
 
 const start = async () => {
     try {
+        migrate(db, { migrationsFolder: './drizzle' })
         await registerRoutes(app);
-        await app.listen({ port: 3000 });
+        await app.listen({ port: 3000, host: '0.0.0.0' });
         console.log('Server running at http://localhost:3000');
     } catch (err) {
         app.log.error(err);

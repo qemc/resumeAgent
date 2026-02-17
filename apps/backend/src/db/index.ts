@@ -3,5 +3,5 @@ import Database from "better-sqlite3";
 import * as schema from './schema'
 
 
-const sqlite = new Database('sqlite.db')
+const sqlite = new Database(process.env.DB_PATH || 'data/sqlite.db')
 export const db = drizzle(sqlite, { schema })

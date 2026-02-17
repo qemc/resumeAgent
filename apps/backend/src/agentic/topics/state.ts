@@ -5,7 +5,7 @@ import type {
     CareerPath,
     Topic
 } from "../../types/agent";
-import type { resumeLanguage } from "@resume-builder/shared";
+import type { resumeLanguage } from "../../types/resume";
 
 export const State = Annotation.Root({
 

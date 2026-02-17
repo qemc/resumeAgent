@@ -1,15 +1,9 @@
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  schema: "./src/db/schema.ts", // Point this to your actual file path
+  schema: "./src/db/schema.ts",
   dialect: "sqlite",
   dbCredentials: {
-    url: "sqlite.db",
+    url: "data/sqlite.db",
   },
 });
-
-
-// To do:
-// Push DB
-// implement password hash
-// Create user login

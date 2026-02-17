@@ -1,9 +1,3 @@
-/**
- * In-memory tracker for active AI generation tasks.
- * Survives client disconnects and page refreshes.
- * Does NOT survive server restarts (acceptable — restart kills running work anyway).
- */
-
 interface ActiveGenerations {
     generatingAllExpIds: Set<number>;
     regeneratingTopicIds: Set<number>;
@@ -20,8 +14,6 @@ function getOrCreate(userId: number): ActiveGenerations {
     return entry;
 }
 
-// ── Generate All ──
-
 export function trackGenerateAll(userId: number, experienceId: number) {
     getOrCreate(userId).generatingAllExpIds.add(experienceId);
 }
@@ -33,8 +25,6 @@ export function untrackGenerateAll(userId: number, experienceId: number) {
     }
 }
 
-// ── Regenerate Single ──
-
 export function trackRegenerate(userId: number, topicId: number) {
     getOrCreate(userId).regeneratingTopicIds.add(topicId);
 }
@@ -45,8 +35,6 @@ export function untrackRegenerate(userId: number, topicId: number) {
         entry.regeneratingTopicIds.delete(topicId);
     }
 }
-
-// ── Status Query ──
 
 export function getActiveGenerations(userId: number): {
     generatingAllExpIds: number[];

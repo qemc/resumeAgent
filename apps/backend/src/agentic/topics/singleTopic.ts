@@ -13,7 +13,7 @@ import {
     bullet_point_en,
     bullet_point_pl
 } from "./prompts";
-import type { resumeLanguage } from "@resume-builder/shared";
+import type { resumeLanguage } from "../../types/resume";
 
 
 

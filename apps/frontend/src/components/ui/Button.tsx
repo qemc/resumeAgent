@@ -3,15 +3,9 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
-/**
- * Button variant types.
- */
 export type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'ghost' | 'outline';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-/**
- * Props for the Button component.
- */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Visual style variant */
     variant?: ButtonVariant;
@@ -25,9 +19,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     rightIcon?: React.ReactNode;
 }
 
-/**
- * Variant styles mapping.
- */
 const variantStyles: Record<ButtonVariant, string> = {
     primary:
         'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm',
@@ -41,18 +32,12 @@ const variantStyles: Record<ButtonVariant, string> = {
         'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
 };
 
-/**
- * Size styles mapping.
- */
 const sizeStyles: Record<ButtonSize, string> = {
     sm: 'h-8 px-3 text-xs rounded-md',
     md: 'h-10 px-4 py-2 text-sm rounded-lg',
     lg: 'h-12 px-6 py-3 text-base rounded-lg',
 };
 
-/**
- * Loading spinner component.
- */
 const LoadingSpinner = () => (
     <svg
         className="animate-spin h-4 w-4"
@@ -77,21 +62,6 @@ const LoadingSpinner = () => (
     </svg>
 );
 
-/**
- * Reusable Button component with multiple variants and sizes.
- * 
- * Features:
- * - Multiple visual variants (primary, secondary, destructive, ghost, outline)
- * - Three size options (sm, md, lg)
- * - Loading state with spinner
- * - Icon support (left/right)
- * - Full accessibility support
- * 
- * @example
- * <Button variant="primary" size="lg" isLoading={isSubmitting}>
- *   Submit
- * </Button>
- */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
@@ -112,17 +82,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 ref={ref}
                 disabled={disabled || isLoading}
                 className={cn(
-                    // Base styles
                     'inline-flex items-center justify-center gap-2 font-medium',
-                    // Focus styles
                     'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                    // Transition
                     'transition-all duration-200',
-                    // Disabled state
                     'disabled:pointer-events-none disabled:opacity-50',
-                    // Active state
                     'active:scale-[0.98]',
-                    // Variant and size
                     variantStyles[variant],
                     sizeStyles[size],
                     className

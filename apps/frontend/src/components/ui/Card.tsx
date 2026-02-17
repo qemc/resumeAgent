@@ -3,9 +3,6 @@
 import { type HTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
-/**
- * Props for the Card component.
- */
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
     /** Section number badge (1, 2, 3, etc.) */
     sectionNumber?: number;
@@ -21,9 +18,6 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
     headerAction?: React.ReactNode;
 }
 
-/**
- * Badge color mapping.
- */
 const badgeColors = {
     blue: 'bg-blue-100 text-blue-600',
     green: 'bg-green-100 text-green-600',
@@ -32,25 +26,6 @@ const badgeColors = {
     teal: 'bg-teal-100 text-teal-600',
 } as const;
 
-/**
- * Reusable Card component for form sections.
- * 
- * Features:
- * - Consistent styling across all sections
- * - Section number badge with custom colors
- * - Title with optional indicator
- * - Header action slot for buttons
- * 
- * @example
- * <Card
- *   sectionNumber={1}
- *   title="Contact Information"
- *   badgeColor="blue"
- *   headerAction={<Button size="sm">Add</Button>}
- * >
- *   {children}
- * </Card>
- */
 export const Card = forwardRef<HTMLDivElement, CardProps>(
     (
         {
@@ -76,7 +51,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
                 )}
                 {...props}
             >
-                {/* Card Header */}
+
                 {(title || headerAction) && (
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex items-center gap-3">
@@ -113,7 +88,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
                     </div>
                 )}
 
-                {/* Card Content */}
+
                 {children}
             </div>
         );
@@ -122,10 +97,6 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
 Card.displayName = 'Card';
 
-/**
- * Card item wrapper for list items within a Card.
- * Used for individual experience, skill, certificate, or project entries.
- */
 export interface CardItemProps extends HTMLAttributes<HTMLDivElement> {
     /** Show remove button */
     onRemove?: () => void;

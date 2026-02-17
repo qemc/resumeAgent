@@ -24,7 +24,7 @@ import {
     oai5_1
 } from '../models';
 import { enhanceAgent } from '../enhance/enhance';
-import type { resumeLanguage } from '@resume-builder/shared';
+import type { resumeLanguage } from '../../types/resume';
 import { generateSingleTopic } from './singleTopic';
 import z from 'zod';
 import { AppError, ERRORS } from '../../../utils/errors';
@@ -68,53 +68,9 @@ export async function checkAiEnhancedExperience(state: typeof State.State) {
 
 
     if (redefinedTopics && existingEnhance && (lastUpdateEnhance < lastUpdateExp)) {
-
-        let checkUpdateOutputDsc = check_update_en
-        let checkUpdatePrompt = checkEnhanceAccuracyPromptEn
-
-        if (resumeLang !== 'EN') {
-            checkUpdateOutputDsc = check_update_pl
-            checkUpdatePrompt = checkEnhanceAccuracyPromptPl
-        }
-
-        const checkStructuredOutput = z.object({
-            checkResult: z.boolean().describe(checkUpdateOutputDsc)
-        })
-
-        const check_update_so_llm = check_update_model.withStructuredOutput(checkStructuredOutput)
-
-        const checkChain = checkUpdatePrompt.pipe(check_update_so_llm)
-
-        const result = await checkChain.invoke({
-            enhanced: existingEnhance.experience.map((item) => {
-                const redefinedTopic = item.redefinedTopic
-                const redefinedQuotes = item.refinedQuotes.join('\n')
-
-                const finalString = [redefinedTopic, redefinedQuotes].join('\n')
-
-                return finalString
-            }).join('\n'),
-            user: exisitingExp.experience.description
-        })
-
-
-        if (result.checkResult) {
-
-            redefinedTopics = (await enhanceAgent.invoke({
-                expId: expId,
-            })).writerRedefinedTopics
-
-            console.dir(`Enhance check executed successfully - True: ${result.checkResult}`, { depth: null })
-
-        } else {
-            console.dir(`Enhance check executed successfully - False: ${result.checkResult}`, { depth: null })
-            // updating last check date
-            try {
-                await updateAiEnhanceLastUpdate(expId)
-            } catch (error) {
-                throw new AppError(ERRORS.AI_ERROR)
-            }
-        }
+        redefinedTopics = (await enhanceAgent.invoke({
+            expId: expId,
+        })).writerRedefinedTopics
     }
 
     return {

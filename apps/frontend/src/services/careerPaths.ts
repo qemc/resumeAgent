@@ -1,9 +1,6 @@
 import { api } from './api';
 import type { ResumeLang, CareerPath } from '@/types';
 
-// =============================================================================
-// Career Paths
-// =============================================================================
 
 export const getCareerPaths = async (lang: ResumeLang): Promise<CareerPath[]> => {
     const response = await api.get<CareerPath[]>(`/career-paths/${lang}`);
