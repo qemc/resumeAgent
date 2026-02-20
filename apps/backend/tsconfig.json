@@ -22,7 +22,8 @@
     "include": [
         "src/**/*",
         "scripts/**/*",
-        "utils/**/*"
+        "utils/**/*",
+        "drizzle.config.ts"
     ],
     "exclude": [
         "node_modules",

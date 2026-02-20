@@ -2,9 +2,11 @@ services:
   backend:
     build: ./apps/backend
     env_file:
-      - ./apps/backend/.env
+      - /home/qemc/Documents/resumeAgentInterface/actions-runner/env/.env
+      #- ./apps/backend/.env
     volumes:
-      - ./apps/backend/data:/app/data
+      - ${DATA_PATH}:/app/data
+      #- ./apps/backend/data:/app/data
 
   frontend:
     build: ./apps/frontend
