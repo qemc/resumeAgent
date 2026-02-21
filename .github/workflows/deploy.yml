@@ -15,5 +15,6 @@ jobs:
 
       - name: Build and Deploy with Docker Compose
         run: |
-          docker compose down
-          docker compose up -d --build
+          cp /home/qemc/Documents/resumeAgentInterface/actions-runner/env/.env ./apps/backend/.env
+          docker compose --env-file /home/qemc/Documents/resumeAgentInterface/actions-runner/env/.env down
+          docker compose --env-file /home/qemc/Documents/resumeAgentInterface/actions-runner/env/.env up -d --build

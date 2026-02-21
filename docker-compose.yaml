@@ -1,12 +1,10 @@
 services:
   backend:
     build: ./apps/backend
-    env_file:
-      - /home/qemc/Documents/resumeAgentInterface/actions-runner/env/.env
-      #- ./apps/backend/.env
     volumes:
-      - ${DATA_PATH}:/app/data
-      #- ./apps/backend/data:/app/data
+      - ${HOST_DB_PATH}:/app/data
+    env_file:
+      - ./apps/backend/.env
 
   frontend:
     build: ./apps/frontend
@@ -14,3 +12,5 @@ services:
       - "80:80"
     depends_on:
       - backend
+
+# docker compose --env-file ./apps/backend/.env up -d
