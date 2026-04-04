@@ -34,12 +34,15 @@ import {
     deleteEducation,
     getSkills,
     createSkill,
+    updateSkill,
     deleteSkill,
     getLanguages,
     createLanguage,
+    updateLanguage,
     deleteLanguage,
     getInterests,
     createInterest,
+    updateInterest,
     deleteInterest,
 } from '@/services/resume';
 
@@ -222,6 +225,24 @@ export function MyResumePage() {
         }));
     };
 
+    const handleSaveSkills = async () => {
+        if (currentData.skillRows.length === 0) return;
+
+        setSavingSection('skills');
+        try {
+            await Promise.all(
+                currentData.skillRows.map(row => {
+                    const { id, user_id, resume_lang, ...data } = row;
+                    return updateSkill(row.id, data);
+                })
+            );
+        } catch (error) {
+            console.error('Failed to save skills:', error);
+        } finally {
+            setSavingSection(null);
+        }
+    };
+
     // ==========================================================================
     // Languages Handlers (each language is a separate DB row)
     // ==========================================================================
@@ -258,6 +279,24 @@ export function MyResumePage() {
         }));
     };
 
+    const handleSaveLanguages = async () => {
+        if (currentData.languageRows.length === 0) return;
+
+        setSavingSection('languages');
+        try {
+            await Promise.all(
+                currentData.languageRows.map(row => {
+                    const { id, user_id, resume_lang, ...data } = row;
+                    return updateLanguage(row.id, data);
+                })
+            );
+        } catch (error) {
+            console.error('Failed to save languages:', error);
+        } finally {
+            setSavingSection(null);
+        }
+    };
+
     // ==========================================================================
     // Interests Handlers (each interest is a separate DB row)
     // ==========================================================================
@@ -292,6 +331,24 @@ export function MyResumePage() {
             ...prev,
             interestRows: prev.interestRows.map(i => i.id === numId ? { ...i, [field]: value } : i)
         }));
+    };
+
+    const handleSaveInterests = async () => {
+        if (currentData.interestRows.length === 0) return;
+
+        setSavingSection('interests');
+        try {
+            await Promise.all(
+                currentData.interestRows.map(row => {
+                    const { id, user_id, resume_lang, ...data } = row;
+                    return updateInterest(row.id, data);
+                })
+            );
+        } catch (error) {
+            console.error('Failed to save interests:', error);
+        } finally {
+            setSavingSection(null);
+        }
     };
 
     // ==========================================================================
@@ -650,7 +707,7 @@ export function MyResumePage() {
                 onAdd={handleAddSkill}
                 onRemove={handleRemoveSkill}
                 onUpdate={handleUpdateSkill}
-                extraHeaderAction={<SaveButton section="skills" onClick={() => {}} />}
+                extraHeaderAction={<SaveButton section="skills" onClick={handleSaveSkills} />}
                 lang={activeLang}
             />
 
@@ -714,7 +771,7 @@ export function MyResumePage() {
                 onAdd={handleAddLanguage}
                 onRemove={handleRemoveLanguage}
                 onUpdate={handleUpdateLanguage}
-                extraHeaderAction={<SaveButton section="languages" onClick={() => {}} />}
+                extraHeaderAction={<SaveButton section="languages" onClick={handleSaveLanguages} />}
                 lang={activeLang}
             />
 
@@ -727,7 +784,7 @@ export function MyResumePage() {
                 onAdd={handleAddInterest}
                 onRemove={handleRemoveInterest}
                 onUpdate={handleUpdateInterest}
-                extraHeaderAction={<SaveButton section="interests" onClick={() => {}} />}
+                extraHeaderAction={<SaveButton section="interests" onClick={handleSaveInterests} />}
                 lang={activeLang}
             />
         </div>

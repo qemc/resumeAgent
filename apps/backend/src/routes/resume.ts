@@ -119,6 +119,12 @@ const createSkillSchema = z.object({
     category: z.string().optional(),
 });
 
+const updateSkillSchema = z.object({
+    skill: z.string(),
+    level: z.string(),
+    category: z.string(),
+}).partial();
+
 
 // ── Languages ──
 
@@ -128,6 +134,11 @@ const createLanguageSchema = z.object({
     level: z.string(),
 });
 
+const updateLanguageSchema = z.object({
+    name: z.string(),
+    level: z.string(),
+}).partial();
+
 
 // ── Interests ──
 
@@ -135,6 +146,10 @@ const createInterestSchema = z.object({
     resume_lang: z.enum(['EN', 'PL']),
     interest: z.string(),
 });
+
+const updateInterestSchema = z.object({
+    interest: z.string(),
+}).partial();
 
 
 export async function resumeRoutes(app: FastifyInstance) {
@@ -416,6 +431,24 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(201).send(inserted);
     });
 
+    app.patch('/skills/:id', { onRequest: [app.auth] }, async (req) => {
+        const { id } = idParamSchema.parse(req.params);
+
+        const existing = await db.query.skills.findFirst({
+            where: and(eq(skills.id, id), eq(skills.user_id, req.user.id))
+        });
+        if (!existing) throw new AppError(ERRORS.NOT_FOUND);
+
+        const parse = updateSkillSchema.safeParse(req.body);
+        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+
+        await db.update(skills)
+            .set(parse.data)
+            .where(eq(skills.id, id));
+
+        return { ...existing, ...parse.data };
+    });
+
     app.delete('/skills/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
         await db.delete(skills)
@@ -447,6 +480,24 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(201).send(inserted);
     });
 
+    app.patch('/languages/:id', { onRequest: [app.auth] }, async (req) => {
+        const { id } = idParamSchema.parse(req.params);
+
+        const existing = await db.query.languages.findFirst({
+            where: and(eq(languages.id, id), eq(languages.user_id, req.user.id))
+        });
+        if (!existing) throw new AppError(ERRORS.NOT_FOUND);
+
+        const parse = updateLanguageSchema.safeParse(req.body);
+        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+
+        await db.update(languages)
+            .set(parse.data)
+            .where(eq(languages.id, id));
+
+        return { ...existing, ...parse.data };
+    });
+
     app.delete('/languages/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
         await db.delete(languages)
@@ -476,6 +527,24 @@ export async function resumeRoutes(app: FastifyInstance) {
         }).returning();
 
         return reply.status(201).send(inserted);
+    });
+
+    app.patch('/interests/:id', { onRequest: [app.auth] }, async (req) => {
+        const { id } = idParamSchema.parse(req.params);
+
+        const existing = await db.query.interests.findFirst({
+            where: and(eq(interests.id, id), eq(interests.user_id, req.user.id))
+        });
+        if (!existing) throw new AppError(ERRORS.NOT_FOUND);
+
+        const parse = updateInterestSchema.safeParse(req.body);
+        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+
+        await db.update(interests)
+            .set(parse.data)
+            .where(eq(interests.id, id));
+
+        return { ...existing, ...parse.data };
     });
 
     app.delete('/interests/:id', { onRequest: [app.auth] }, async (req, reply) => {

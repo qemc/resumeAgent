@@ -56,7 +56,7 @@ export const getExperiences = async (lang: ResumeLang): Promise<ExperienceRow[]>
 export const createExperience = async (lang: ResumeLang, data: {
     company: string;
     position: string;
-    start_date?: string;
+    start_date: string;
     end_date?: string;
     current?: boolean;
     description?: string;
@@ -102,7 +102,7 @@ export const getEducation = async (lang: ResumeLang): Promise<EducationRow[]> =>
 export const createEducation = async (lang: ResumeLang, data: {
     university: string;
     degree: string;
-    start_date?: string;
+    start_date: string;
     end_date?: string;
     current?: boolean;
 }): Promise<EducationRow> => {
@@ -229,6 +229,18 @@ export const createSkill = async (lang: ResumeLang, data: {
     return response.data;
 };
 
+export const updateSkill = async (
+    id: number,
+    data: Partial<{
+        skill: string;
+        level: string;
+        category: string;
+    }>
+): Promise<SkillRow> => {
+    const response = await api.patch<SkillRow>(`/skills/${id}`, data);
+    return response.data;
+};
+
 export const deleteSkill = async (id: number): Promise<void> => {
     await api.delete(`/skills/${id}`);
 };
@@ -252,6 +264,17 @@ export const createLanguage = async (lang: ResumeLang, data: {
     return response.data;
 };
 
+export const updateLanguage = async (
+    id: number,
+    data: Partial<{
+        name: string;
+        level: string;
+    }>
+): Promise<LanguageRow> => {
+    const response = await api.patch<LanguageRow>(`/languages/${id}`, data);
+    return response.data;
+};
+
 export const deleteLanguage = async (id: number): Promise<void> => {
     await api.delete(`/languages/${id}`);
 };
@@ -271,6 +294,16 @@ export const createInterest = async (lang: ResumeLang, data: {
         resume_lang: lang,
         ...data,
     });
+    return response.data;
+};
+
+export const updateInterest = async (
+    id: number,
+    data: Partial<{
+        interest: string;
+    }>
+): Promise<InterestRow> => {
+    const response = await api.patch<InterestRow>(`/interests/${id}`, data);
     return response.data;
 };
 
