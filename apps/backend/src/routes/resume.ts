@@ -120,9 +120,9 @@ const createSkillSchema = z.object({
 });
 
 const updateSkillSchema = z.object({
-    skill: z.string(),
-    level: z.string(),
-    category: z.string(),
+    skill: z.string().nullable().transform(v => v === null ? "" : v).optional(),
+    level: z.string().nullable().optional(),
+    category: z.string().nullable().optional(),
 }).partial();
 
 
@@ -135,8 +135,8 @@ const createLanguageSchema = z.object({
 });
 
 const updateLanguageSchema = z.object({
-    name: z.string(),
-    level: z.string(),
+    name: z.string().nullable().transform(v => v === null ? "" : v).optional(),
+    level: z.string().nullable().transform(v => v === null ? "" : v).optional(),
 }).partial();
 
 
@@ -148,7 +148,7 @@ const createInterestSchema = z.object({
 });
 
 const updateInterestSchema = z.object({
-    interest: z.string(),
+    interest: z.string().nullable().transform(v => v === null ? "" : v).optional(),
 }).partial();
 
 
@@ -168,7 +168,7 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/experiences', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createExperienceSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
         const [inserted] = await db.insert(experiences).values({
             user_id: req.user.id,
@@ -225,7 +225,7 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/certificates', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createCertificateSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
         const [inserted] = await db.insert(certificates).values({
             user_id: req.user.id,
@@ -274,7 +274,7 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/projects', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createProjectSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
         const [inserted] = await db.insert(projects).values({
             user_id: req.user.id,
@@ -323,7 +323,7 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/education', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createEducationSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
         const [inserted] = await db.insert(education).values({
             user_id: req.user.id,
@@ -421,17 +421,21 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/skills', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createSkillSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
-        const [inserted] = await db.insert(skills).values({
-            user_id: req.user.id,
-            ...parse.data
-        }).returning();
+        try {
+            const [inserted] = await db.insert(skills).values({
+                user_id: req.user.id,
+                ...parse.data
+            }).returning();
 
-        return reply.status(201).send(inserted);
+            return reply.status(201).send(inserted);
+        } catch (e: any) {
+            return reply.status(500).send({ err: e.message || e.toString() });
+        }
     });
 
-    app.patch('/skills/:id', { onRequest: [app.auth] }, async (req) => {
+    app.patch('/skills/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
 
         const existing = await db.query.skills.findFirst({
@@ -446,8 +450,10 @@ export async function resumeRoutes(app: FastifyInstance) {
             .set(parse.data)
             .where(eq(skills.id, id));
 
-        return { ...existing, ...parse.data };
+        return { id, ...existing, ...parse.data };
     });
+
+
 
     app.delete('/skills/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
@@ -470,7 +476,7 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/languages', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createLanguageSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
         const [inserted] = await db.insert(languages).values({
             user_id: req.user.id,
@@ -480,7 +486,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(201).send(inserted);
     });
 
-    app.patch('/languages/:id', { onRequest: [app.auth] }, async (req) => {
+    app.patch('/languages/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
 
         const existing = await db.query.languages.findFirst({
@@ -495,7 +501,7 @@ export async function resumeRoutes(app: FastifyInstance) {
             .set(parse.data)
             .where(eq(languages.id, id));
 
-        return { ...existing, ...parse.data };
+        return { id, ...existing, ...parse.data };
     });
 
     app.delete('/languages/:id', { onRequest: [app.auth] }, async (req, reply) => {
@@ -519,7 +525,7 @@ export async function resumeRoutes(app: FastifyInstance) {
 
     app.post('/interests', { onRequest: [app.auth] }, async (req, reply) => {
         const parse = createInterestSchema.safeParse(req.body);
-        if (!parse.success) throw new AppError(ERRORS.INVALID_REQUEST);
+        if (!parse.success) return reply.status(400).send(parse.error);
 
         const [inserted] = await db.insert(interests).values({
             user_id: req.user.id,
@@ -529,7 +535,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(201).send(inserted);
     });
 
-    app.patch('/interests/:id', { onRequest: [app.auth] }, async (req) => {
+    app.patch('/interests/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
 
         const existing = await db.query.interests.findFirst({
@@ -544,7 +550,7 @@ export async function resumeRoutes(app: FastifyInstance) {
             .set(parse.data)
             .where(eq(interests.id, id));
 
-        return { ...existing, ...parse.data };
+        return { id, ...existing, ...parse.data };
     });
 
     app.delete('/interests/:id', { onRequest: [app.auth] }, async (req, reply) => {

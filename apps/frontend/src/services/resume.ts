@@ -233,8 +233,8 @@ export const updateSkill = async (
     id: number,
     data: Partial<{
         skill: string;
-        level: string;
-        category: string;
+        level: string | null;
+        category: string | null;
     }>
 ): Promise<SkillRow> => {
     const response = await api.patch<SkillRow>(`/skills/${id}`, data);
