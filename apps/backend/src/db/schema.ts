@@ -148,3 +148,12 @@ export const topics = pgTable('topics', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
+
+export const resume = pgTable('resume', {
+    id: serial('id').primaryKey(),
+    user_id: integer('user_id')
+        .references(() => users.id, { onDelete: 'cascade' })
+        .notNull(),
+    resume_description: text('resume_lang').notNull(),
+
+})

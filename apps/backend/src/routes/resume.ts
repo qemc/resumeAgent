@@ -89,6 +89,7 @@ const resumeSchema = z.object({
 export async function resumeRoutes(app: FastifyInstance) {
 
 
+    // get experiences relevant to the language 
     app.get('/experiences/:lang', { onRequest: [app.auth] }, async (req) => {
         const { lang } = langParamSchema.parse(req.params);
         const items = await db.query.experiences.findMany({
@@ -97,6 +98,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         return items;
     });
 
+    // create new experience
     app.post('/experiences', { onRequest: [app.auth] }, async (req, reply) => {
 
         const bodySchema = z.object({
@@ -115,6 +117,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         return reply.status(201).send(inserted);
     });
 
+    // update single experience
     app.patch('/experiences/:id', { onRequest: [app.auth] }, async (req) => {
         const { id } = idParamSchema.parse(req.params);
 
@@ -146,6 +149,7 @@ export async function resumeRoutes(app: FastifyInstance) {
         }
     });
 
+    // delete single experience
     app.delete('/experiences/:id', { onRequest: [app.auth] }, async (req, reply) => {
         const { id } = idParamSchema.parse(req.params);
 

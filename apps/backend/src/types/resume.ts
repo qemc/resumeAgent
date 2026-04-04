@@ -67,5 +67,26 @@ export interface Language {
     level: LanguageLevel;
     name: string;
 }
+type LanguageSummary = Omit<Language, 'id'>
 
 export type resumeLanguage = 'EN' | 'PL';
+
+export interface Education {
+    id: string,
+    university: string,
+    degree: string
+    startDate: string,
+    endDate: string,
+    current: string
+}
+
+export interface resume_data {
+    lang: resumeLanguage,
+    contact: Contact,
+    bullet_points: string[],
+    skills: string[],
+    languages: LanguageSummary,
+    projects: Project[],
+    certs: Certificate[],
+    education: Education[]
+}

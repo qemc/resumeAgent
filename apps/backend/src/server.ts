@@ -4,6 +4,7 @@ import { fastifyCors } from '@fastify/cors';
 import { registerRoutes } from './routes/index';
 import fastifyJwt from '@fastify/jwt';
 import cookie from '@fastify/cookie';
+import { AppError } from '../utils/errors';
 
 const JWT_SECRET_KEY = process.env['JWT_SECRET_KEY'];
 const COOKIE_SECRET_KEY = process.env['COOKIE_SECRET_KEY']
@@ -28,6 +29,22 @@ app.decorate('auth', async function (request: FastifyRequest, reply: FastifyRepl
     } catch (err) {
         reply.send(err)
     }
+})
+
+app.setErrorHandler((error, request, reply) => {
+    if (error instanceof AppError) {
+        return reply.status(error.statusCode).send({
+            success: false,
+            code: error.code,
+            message: error.message
+        })
+    }
+
+    return reply.status(500).send({
+        success: false,
+        code: 'SYS_000',
+        message: 'Internal server error'
+    })
 })
 
 

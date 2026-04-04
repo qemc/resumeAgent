@@ -55,7 +55,21 @@ export const ERRORS = {
         code: 'AUTH_003',
         message: 'Registration is currently disabled',
         status: 403
+    },
+
+    // internal routes errors
+    INT_KEY_MISSCONFIG: {
+        code: 'INT_KEY_001',
+        message: 'Api key is misconfigured on server side',
+        status: 500
+    },
+    INT_KEY_MISSING: {
+        code: 'INT_KEY_002',
+        message: 'Your provided api key is missing or invalid',
+        status: 401
     }
+
+
 } as const;
 
 export class AppError extends Error {
